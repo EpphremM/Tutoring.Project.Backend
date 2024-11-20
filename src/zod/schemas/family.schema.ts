@@ -23,7 +23,7 @@ export const familySchema= z.object({
       })
   
 }).required();
-export const familyTutorSchema= z.object({
+export const familyUpdateSchema= z.object({
   firstName:z.string().trim().max(20).min(1).optional(),
   lastName:z.string().trim().max(20).min(1).optional(),
   email:z.string().email({message:"invalid email address"}).optional(),

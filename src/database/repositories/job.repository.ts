@@ -12,7 +12,7 @@ export class JobRepository{
     async find(){
         return await this.jobRpository.find();
     }
-    async findOneById(id:string){
+    async findById(id:string){
      return await this.jobRpository.findOne({where:{id}});
     }
     async update(job:JobInterface,newJob:Partial<JobInterface>){

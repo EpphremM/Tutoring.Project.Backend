@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { inputValidate } from "../zod/middlewares/zod.validation";
-import { familySchema, familyTutorSchema } from "../zod/schemas/family.schema";
+import { familySchema, familyUpdateSchema } from "../zod/schemas/family.schema";
 import { FamilyRepository } from "../database/repositories/family.repository";
 import { FamilyInterface } from "../database/interfaces/family.interface";
 import { ResponseBody } from "../express/types/response.body";
@@ -84,7 +84,7 @@ export const update = async (
     const { id } = req.params;
     const body: Partial<FamilyInterface> = req.body;
     delete body.password;
-    const validator = inputValidate(familyTutorSchema, body);
+    const validator = inputValidate(familyUpdateSchema, body);
     const family: FamilyInterface = await new FamilyRepository().findById(id);
     if (!validator.status) {
         res.status(400).json({
