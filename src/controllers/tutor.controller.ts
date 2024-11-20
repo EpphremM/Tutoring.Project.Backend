@@ -20,6 +20,7 @@ export const registration = async (
         message: "validation error",
         error: validation.errors,
       });
+      return;
     }
     const result = await new TutorRepository().register(body);
     const responseBody: ResponseBody<TutorInterface> = {
@@ -28,7 +29,7 @@ export const registration = async (
       data: { payload: result },
     };
     res.status(201).json(responseBody);
-    next();
+    return;
   } catch (error) {
     next(
       new AppError(
@@ -53,11 +54,12 @@ export const findAll = async (
         status: "fail",
         message: "data not found",
       });
+      return;
     }
     console.log(results);
     res.status(200).json({ status: "success", data: { payload: results } });
 
-    next();
+    return;
   } catch (error) {
     next(
       new AppError(
@@ -83,9 +85,10 @@ export const findById = async (
         status: "fail",
         message: "data not found",
       });
+      return;
     }
     res.status(200).json({ status: "success", data: { payload: result } });
-    next();
+    return;
   } catch (error) {
     next(new AppError("error occured", 400, error, "operation"));
   }
@@ -105,6 +108,7 @@ export const update = async (
         status: "fail",
         message: "data not found",
       });
+      return;
     }
     const validator = inputValidate(tutorUpdateSchema, body);
     if (!validator.status) {
@@ -113,6 +117,7 @@ export const update = async (
         message: "validation error",
         error: validator.errors,
       });
+      return;
     }
     const result = await new TutorRepository().update(tutor, body);
     if (!result) {
@@ -120,15 +125,17 @@ export const update = async (
         status: "fail",
         message: "tutor nor updated",
       });
+      return;
     }
     if (!body) {
       res.status(200).json({
         statu: "success",
         message: "not change from perevious",
       });
+      return;
     }
     res.status(200).json({ status: "success", data: { payload: result } });
-    next();
+    return;
   } catch (error) {
     next(new AppError("error occured", 400, error, "operational"));
   }

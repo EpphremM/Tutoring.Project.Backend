@@ -20,6 +20,7 @@ export const registration = async (
       message: "Validation error",
       error: validator.errors,
     });
+    return;
   }
   const result = await new FamilyRepository().register(body);
   const responseBody: ResponseBody<FamilyInterface> = {
@@ -28,7 +29,7 @@ export const registration = async (
     data: { payload: result },
   };
   res.status(201).json(responseBody);
-  next();
+  return;
 };
 
 export const findAll = async (
@@ -44,8 +45,10 @@ export const findAll = async (
         status: "fail",
         message: "data not found",
       });
+      return;
     }
     res.status(200).json({ status: "success", data: { payload: results } });
+    return;
   } catch (error) {
     next(new AppError("error occured", 400, error, "operational"));
   }
@@ -64,9 +67,10 @@ export const findById = async (
         status: "fail",
         message: "data not found",
       });
+      return;
     }
     res.status(200).json({ status: "success", data: { payload: result } });
-    next();
+    return;
   } catch (error) {
     next(new AppError("error occured", 400, error, "operational"));
   }
@@ -87,12 +91,14 @@ export const update = async (
         message: "validation error",
         error: validator.errors,
       });
+      return;
     }
     if (!family) {
       res.status(400).json({
         status: "fail",
         message: "data not found",
       });
+      return;
     }
     const result = await new FamilyRepository().update(family, body);
     if (!result) {
@@ -100,9 +106,10 @@ export const update = async (
         status: "fail",
         message: "family not updated",
       });
+      return;
     }
     res.status(200).json({ status: "success", data: { payload: result } });
-    next();
+    return;
   } catch (error) {
     next(new AppError("error occured", 400, error, "operational"));
   }

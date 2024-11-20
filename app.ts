@@ -5,6 +5,7 @@ import { FamilyRoutes } from './src/routes/family.routes';
 import { globalErrorHandler } from './src/controllers/global.error.controller';
 import { AppError } from './src/express/error/app.error';
 import { TutorRoutes } from './src/routes/tutor.routes';
+import { Jobroutes } from './src/routes/job.routes';
 
 class App{
   public app:Application;
@@ -20,8 +21,10 @@ class App{
   private initializeRoutes(){
     const familyRoutes=new FamilyRoutes();
     const tutorRoutes=new TutorRoutes();
+    const jobRouter=new Jobroutes();
     this.app.use("/app/v1/family",familyRoutes.router)
     this.app.use('/app/v1/tutor',tutorRoutes.router)
+    this.app.use('/app/v1/job',jobRouter.router)
     this.app.use("/dog",dogRouter);
     this.app.use(globalErrorHandler)
   }
