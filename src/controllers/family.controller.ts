@@ -17,13 +17,14 @@ export const registration = async (
   console.log(validator);
   if (!validator.status) {
     res.status(400).json({
-      message: "validation error",
+      message: "Validation error",
       error: validator.errors,
     });
   }
   const result = await new FamilyRepository().register(body);
   const responseBody: ResponseBody<FamilyInterface> = {
     status: "success",
+    message:"Family registered successully",
     data: { payload: result },
   };
   res.status(201).json(responseBody);
@@ -65,6 +66,7 @@ export const findById = async (
       });
     }
     res.status(200).json({ status: "success", data: { payload: result } });
+    next();
   } catch (error) {
     next(new AppError("error occured", 400, error, "operational"));
   }
@@ -81,7 +83,7 @@ export const update = async (
     const validator = inputValidate(familyTutorSchema, body);
     const family: FamilyInterface = await new FamilyRepository().findById(id);
     if (!validator.status) {
-      res.status(400).json({
+        res.status(400).json({
         message: "validation error",
         error: validator.errors,
       });

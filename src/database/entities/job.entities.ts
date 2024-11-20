@@ -53,5 +53,4 @@ export class Job implements JobInterface{
     @ManyToMany(()=>Tutor,(tutor)=>tutor.job)
     @JoinTable({name:"tutor_job"})
     tutor:Tutor[]
-
 }

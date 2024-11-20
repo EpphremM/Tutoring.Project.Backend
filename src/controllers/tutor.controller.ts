@@ -24,9 +24,10 @@ export const registration = async (
     const result = await new TutorRepository().register(body);
     const responseBody: ResponseBody<TutorInterface> = {
       status: "success",
+      message:"tutor registered successfully",
       data: { payload: result },
     };
-    res.status(201).json({ responseBody });
+    res.status(201).json(responseBody);
     next();
   } catch (error) {
     next(
