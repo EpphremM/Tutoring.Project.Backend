@@ -10,7 +10,13 @@ export class Transaction implements TransactionInterface{
     id: string;
 
     @Column()
-   amount: Number;
+    amount: Number;
+
+    @Column()
+    firstName:string;
+
+    @Column()
+    lastName:string;
 
     @Column({nullable:false,update:false})
     tx_ref:string
@@ -20,12 +26,6 @@ export class Transaction implements TransactionInterface{
 
     @Column()
     phoneNumber:string
-
-    @Column()
-    firstName:string;
-
-    @Column()
-    lastName:string;
 
     @Column()
     callbackUrl:string;
