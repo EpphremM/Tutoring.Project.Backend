@@ -6,6 +6,7 @@ import { ResponseBody } from "../express/types/response.body";
 import { JobInterface } from "../database/interfaces/job.interface";
 import { TransactionRepository } from "../database/repositories/transaction.reponsitoy";
 import { AppError } from "../express/error/app.error";
+import { error } from "console";
 
 export const registration=async(req:Request,res:Response,next:NextFunction)=>{
     try{
@@ -16,7 +17,7 @@ export const registration=async(req:Request,res:Response,next:NextFunction)=>{
        res.status(400).json({
         status:"fail",
         message:"validation error",
-        data:[]
+        error:validator.errors
        })
        return;
         }

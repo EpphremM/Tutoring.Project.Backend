@@ -52,6 +52,7 @@
       "mime-db": "^1.52.0",
       "mime-types": "^2.1.35",
       "ms": "^2.0.0",
+      "nanoid": "^3.3.7",
       "negotiator": "^0.6.3",
       "object-inspect": "^1.13.3",
       "on-finished": "^2.4.1",

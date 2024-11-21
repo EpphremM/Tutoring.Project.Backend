@@ -4,8 +4,7 @@ export const transactionSchema=z.object({
     firstName:z.string().trim().max(20).min(1),
     lastName:z.string().trim().max(20).min(1),
     email:z.string().email({message:"invalid email address"}),
-    tx_ref:z.string(),
-    phone:z.string().trim().min(9).max(13).refine((value)=>{
+    phoneNumber:z.string().trim().min(9).max(13).refine((value)=>{
         const regex=/^(09\d{8}|07\d{8}|9\d{8}|7\d{8}|\+2517\d{8}|\+2519\d{8})$/;
         return regex.test(value);
     },{
