@@ -49,11 +49,11 @@ export class Transaction implements TransactionInterface {
   @JoinColumn({ name: "tutor_id" })
   tutor: Tutor;
   @Column({ nullable: true })
-  tutor_id: String;
+  tutor_id: string;
 
   @ManyToOne(() => Family, (family) => family.trasactions, { cascade: true })
-  @JoinColumn({ name: "family_id" })
+  @JoinColumn()
   family: Family;
-  @Column({ nullable: true })
+  @Column()
   family_id: string;
 }

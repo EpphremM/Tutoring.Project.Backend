@@ -112,7 +112,7 @@ try{
         res.status(400).json({status:"fail",message:"validation failed",error:validator.errors})
         return;
     }else if(!job){
-        res.status(400).json({status:"fail",message:"data not found",data:[]})
+        res.status(400).json({status:"fail",message:"Job not found",data:[]})
         return;
     }
     const result= await new JobRepository().update(job,body)
