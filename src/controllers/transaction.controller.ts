@@ -3,12 +3,8 @@ import { TransactionInterface } from "../database/interfaces/transaction.interfa
 import { inputValidate } from '../zod/middlewares/zod.validation';
 import { transactionSchema, transactionUpdateSchema } from "../zod/schemas/transaction.schema";
 import { ResponseBody } from '../express/types/response.body';
-import { JobInterface } from "../database/interfaces/job.interface";
 import { TransactionRepository } from "../database/repositories/transaction.reponsitoy";
 import { AppError } from "../express/error/app.error";
-import { error } from "console";
-import { Transaction } from "../database/entities/transaction.entity";
-
 export const registration=async(req:Request,res:Response,next:NextFunction)=>{
     try{
 
@@ -74,6 +70,7 @@ export const findById=async(req:Request,res:Response,next:NextFunction)=>{
 export const update=async(req:Request,res:Response,next:NextFunction)=>{
     try{
      const body:TransactionInterface=req.body;
+     delete body.tx_ref;
      const {id}=req.params;
      const validator=inputValidate(transactionUpdateSchema,body);
      const transaction:TransactionInterface=await new TransactionRepository().findById(id);

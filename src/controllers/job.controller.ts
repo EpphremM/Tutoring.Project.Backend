@@ -6,6 +6,7 @@ import { JobRepository } from "../database/repositories/job.repository";
 import { ResponseBody } from "../express/types/response.body";
 import { inputValidate } from '../zod/middlewares/tutor.validation';
 import { FamilyRepository } from "../database/repositories/family.repository";
+import { TransactionInterface } from "../database/interfaces/transaction.interface";
 
 export const registration = async (
   req: Request,
@@ -54,7 +55,7 @@ export const findAll = async (
   next: NextFunction
 ) => {
   try {
-    const results = await new JobRepository().find();
+    const results:JobInterface[] = await new JobRepository().find();
     if (!results) {
       res.status(404).json({
         status: "success",
@@ -63,7 +64,7 @@ export const findAll = async (
       });
       return;
     }
-    const responseBody= {
+    const responseBody:ResponseBody<JobInterface[]>= {
       status: "success",
       message: "Jobs fetched successfully",
       data: { payload: results },
@@ -84,7 +85,7 @@ export const findAll = async (
 export const findById=async(req:Request,res:Response,next:NextFunction)=>{
     try{
         const {id}=req.params;
-    const result= await new JobRepository().findById(id);
+    const result:JobInterface= await new JobRepository().findById(id);
     if(!result){
         res.status(404).
         json({status:"fail",message:"no job found by this id",data:[]});
@@ -106,7 +107,7 @@ export const update=async(req:Request,res:Response,next:NextFunction)=>{
 try{
     const body:Partial<JobInterface>=req.body;
     const {id}=req.params;
-    const job=await new JobRepository().findById(id);
+    const job:JobInterface=await new JobRepository().findById(id);
     const validator=inputValidate(jobUpdateSchema,body);
     if(!validator.status){
         res.status(400).json({status:"fail",message:"validation failed",error:validator.errors})
