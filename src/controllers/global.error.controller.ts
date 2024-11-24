@@ -21,7 +21,7 @@ export const globalErrorHandler = (
       error = !err.error ? new Error("") : err.error;
     }
 
-    res.status(statusCode).json({ message: message, name: name, error: error.stack?error.stack:error });
+    res.status(statusCode).json({ message: message, name: name, error:error });
     return;
   } catch (error) {
   next(new AppError("error occured",400,"operational",error))

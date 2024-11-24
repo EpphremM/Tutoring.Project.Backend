@@ -29,7 +29,7 @@ export class Application implements ApplicationInterface {
   })
   @JoinColumn({ name: "job_id" })
   job: Job;
-  @Column({ nullable: true })
+  @Column()
   job_id: string;
   @ManyToOne(() => Tutor, (tutor) => tutor.applications, {
     cascade: true,

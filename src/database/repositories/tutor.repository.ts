@@ -9,8 +9,8 @@ import { JobInterface } from "../interfaces/job.interface";
 
 export class TutorRepository {
   tutorRepository = AppDataSource.getRepository<TutorInterface>(Tutor);
-   static TutorRepo:TutorRepository|null;
-  private constructor(){}
+  static TutorRepo: TutorRepository | null;
+  private constructor() {}
   async register(tutor: TutorInterface) {
     return await this.tutorRepository.save(tutor);
   }
@@ -20,9 +20,11 @@ export class TutorRepository {
     return await this.tutorRepository.save(tutor);
   }
   async find() {
-    return await this.tutorRepository.find({
-      relations: ["job","application"],
-    });
+    return await this.tutorRepository
+      .createQueryBuilder("tutor")
+      .leftJoinAndSelect("tutor.job", "jobs")
+      .leftJoinAndSelect('tutor.applications','application')
+      .getMany();
   }
   async findOneById(id: string) {
     return await this.tutorRepository.findOne({ where: { id } });
@@ -34,9 +36,9 @@ export class TutorRepository {
     const updated = await this.tutorRepository.merge(tutor, newTutor);
     return await this.tutorRepository.save(updated);
   }
-  static getRepo(){
-    if(!TutorRepository.TutorRepo){
-      TutorRepository.TutorRepo=new TutorRepository();
+  static getRepo() {
+    if (!TutorRepository.TutorRepo) {
+      TutorRepository.TutorRepo = new TutorRepository();
     }
     return TutorRepository.TutorRepo;
   }
