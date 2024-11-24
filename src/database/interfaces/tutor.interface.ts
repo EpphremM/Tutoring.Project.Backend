@@ -1,4 +1,5 @@
 import { Timestamp } from "typeorm";
+import { JobInterface } from "./job.interface";
 export interface TutorInterface {
   id: string;
   firstName: string;
@@ -12,4 +13,5 @@ export interface TutorInterface {
   occupation: string;
   educationLevel: string;
   createdAt: Date;
+  job?: JobInterface[];
 }

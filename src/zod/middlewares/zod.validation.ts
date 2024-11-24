@@ -14,5 +14,5 @@ try{
     return {status:false,errors};
  }
 }catch(error){
-   new AppError("validation cancelled",400,error,"validation error");
+   new AppError("validation cancelled",400,"validation error",error);
 }}

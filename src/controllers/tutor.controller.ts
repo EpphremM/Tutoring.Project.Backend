@@ -5,6 +5,8 @@ import { tutorSchema, tutorUpdateSchema } from "../zod/schemas/tutor.schema";
 import { TutorRepository } from "../database/repositories/tutor.repository";
 import { ResponseBody } from "../express/types/response.body";
 import { AppError } from "../express/error/app.error";
+import { JobRepository } from "../database/repositories/job.repository";
+import { FamilyRepository } from "../database/repositories/family.repository";
 export const registration = async (
   req: Request,
   res: Response,
@@ -12,6 +14,9 @@ export const registration = async (
 ) => {
   try {
     const body: TutorInterface = req.body;
+  
+const {email}:TutorInterface=body;
+const previousTutor=await  TutorRepository.getRepo().findByEmail(email);
     const validation = inputValidate(tutorSchema, body);
     console.log(validation);
     if (!validation.status) {
@@ -21,11 +26,16 @@ export const registration = async (
         error: validation.errors,
       });
       return;
+    }if(previousTutor){
+      res.status(400).json({
+        status:"fail",
+        message:"Tutor already registered"});
+      return;
     }
-    const result = await new TutorRepository().register(body);
+    const result = await TutorRepository.getRepo().register(body);
     const responseBody: ResponseBody<TutorInterface> = {
       status: "success",
-      message:"tutor registered successfully",
+      message: "tutor registered successfully",
       data: { payload: result },
     };
     res.status(201).json(responseBody);
@@ -35,8 +45,8 @@ export const registration = async (
       new AppError(
         "error occured during during registration",
         400,
+        "operational",
         error,
-        "operational"
       )
     );
   }
@@ -48,7 +58,7 @@ export const findAll = async (
   next: NextFunction
 ) => {
   try {
-    const results = await new TutorRepository().find();
+    const results = await TutorRepository.getRepo().find();
     if (!results) {
       res.status(400).json({
         status: "fail",
@@ -65,8 +75,8 @@ export const findAll = async (
       new AppError(
         "error occured during validation",
         404,
+        "validation failed",
         error,
-        "validation failed"
       )
     );
   }
@@ -78,7 +88,7 @@ export const findById = async (
 ) => {
   try {
     const { id } = req.params;
-    const result = await new TutorRepository().findOneById(id);
+    const result = await TutorRepository.getRepo().findOneById(id);
 
     if (!result) {
       res.status(400).json({
@@ -90,7 +100,7 @@ export const findById = async (
     res.status(200).json({ status: "success", data: { payload: result } });
     return;
   } catch (error) {
-    next(new AppError("error occured", 400, error, "operation"));
+    next(new AppError("error occured", 400, "operation",error));
   }
 };
 export const update = async (
@@ -100,8 +110,8 @@ export const update = async (
 ) => {
   try {
     const { id } = req.params;
-    const tutor:TutorInterface = await new TutorRepository().findOneById(id);
-    const body:Partial<TutorInterface> = req.body;
+    const tutor: TutorInterface = await TutorRepository.getRepo().findOneById(id);
+    const body: Partial<TutorInterface> = req.body;
     delete body.password;
     if (!tutor) {
       res.status(400).json({
@@ -119,7 +129,7 @@ export const update = async (
       });
       return;
     }
-    const result = await new TutorRepository().update(tutor, body);
+    const result = await TutorRepository.getRepo().update(tutor, body);
     if (!result) {
       res.status(400).json({
         status: "fail",
@@ -137,6 +147,49 @@ export const update = async (
     res.status(200).json({ status: "success", data: { payload: result } });
     return;
   } catch (error) {
-    next(new AppError("error occured", 400, error, "operational"));
+    next(new AppError("error occured", 400, "operational",error));
   }
+};
+
+export const applyJob = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+ try{
+  type ApplyReq = {
+    tutor_id: string;
+    job_id: string;
+  };
+
+  const body = req.body as ApplyReq;
+
+  if (!req.body.tutor_id || !req.body.job_id) {
+    res.status(404).json({
+      status:"fail",
+      message:"The job or tutor id is not found not found"
+    })
+    return;
+  }
+  const tutor = await TutorRepository.getRepo().findOneById(body.tutor_id);
+  const job = await JobRepository.getRepo().findById(body.job_id);
+if(!tutor){
+  res.status(404).json({
+    status:"fail",
+    message:"tutor not found"
+  })
+}
+if(!job){
+  res.status(404).json({
+    status:"fail",
+    message:"job not found"
+  })
+}
+  const newTutor: TutorInterface = await TutorRepository.getRepo().apply(tutor,job);
+const responseBody:ResponseBody<TutorInterface>={status:"success",message:"tutor applied successfully",data:{payload:newTutor}};
+ res.status(200).json(responseBody);
+  return;
+ }catch(error){
+  next(new AppError("error occured",404,"operational",error))
+ }
 };

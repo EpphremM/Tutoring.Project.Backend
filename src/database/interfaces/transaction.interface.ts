@@ -1,4 +1,7 @@
 import { Decimal128 } from "typeorm";
+import { FamilyInterface } from "./family.interface";
+import { Tutor } from "../entities/tutor.entity";
+import { Family } from "../entities/family.entity";
 
 export interface TransactionInterface{
     id:string;
@@ -11,4 +14,8 @@ export interface TransactionInterface{
     tx_ref:string;
     returnUrl:string;
     createdAt:Date;
+    family_id:string,
+    tutor_id:string,
+    tutor:Tutor,
+    family:Family
 }

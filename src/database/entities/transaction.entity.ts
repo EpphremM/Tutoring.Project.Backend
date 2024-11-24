@@ -6,6 +6,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Generated,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -13,6 +14,8 @@ import {
 import { Tutor } from "./tutor.entity";
 import { Family } from "./family.entity";
 import { nullable } from "zod";
+import { TutorInterface } from "../interfaces/tutor.interface";
+import { FamilyInterface } from "../interfaces/family.interface";
 @Entity("transaction")
 export class Transaction implements TransactionInterface {
   @PrimaryGeneratedColumn("uuid")
@@ -33,10 +36,9 @@ export class Transaction implements TransactionInterface {
   amount: Number;
 
   @Column({
-    update: false,
     unique: true,
-    default: nanoid(20),
   })
+  @Generated('uuid')
   tx_ref: string;
   @Column()
   callbackUrl: string;

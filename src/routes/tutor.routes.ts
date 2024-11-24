@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { registration, findById, update } from '../controllers/tutor.controller';
+import {
+  registration,
+  findById,
+  update,
+  applyJob,
+} from "../controllers/tutor.controller";
 import { findAll } from "../controllers/tutor.controller";
 export class TutorRoutes {
   public router: Router;
@@ -9,6 +14,7 @@ export class TutorRoutes {
   }
   setRoutes() {
     this.router.route("/").post(registration).get(findAll);
-    this.router.route('/:id').get(findById).patch(update).patch(update)
+    this.router.route("/apply").post(applyJob);
+    this.router.route("/:id").get(findById).patch(update).patch(update);
   }
 }

@@ -1,22 +1,41 @@
-import {Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { Tutor } from "../entities/tutor.entity";
-import { FamilyInterface } from '../interfaces/family.interface';
+import { FamilyInterface } from "../interfaces/family.interface";
 import { AppDataSource } from "../data.source";
-import { Family } from '../entities/family.entity';
+import { Family } from "../entities/family.entity";
 import { Job } from "../entities/job.entities";
-export class FamilyRepository{
-    familyRepository=AppDataSource.getRepository<FamilyInterface>(Family);
-    async register(family:FamilyInterface){
-        return await this.familyRepository.save(family);
+export class FamilyRepository {
+  static familyRepo: FamilyRepository | null = null;
+  private constructor() {}
+  familyRepository = AppDataSource.getRepository<FamilyInterface>(Family);
+  async register(family: FamilyInterface) {
+    return await this.familyRepository.save(family);
+  }
+  async find() {
+    return await this.familyRepository.find({ relations: ["jobs"] });
+  }
+  async findById(id: string) {
+    return await this.familyRepository.findOne({
+      where: { id },
+      relations: ["jobs"],
+    });
+  }
+  async findByEmail(email: string) {
+    return await this.familyRepository.findOne({
+      where: { email },
+      relations: ["jobs"],
+    });
+  }
+  async update(family: FamilyInterface, newFamily: Partial<FamilyInterface>) {
+    const updated = await this.familyRepository.merge(family, newFamily);
+    return await this.familyRepository.save(updated);
+  }
+
+  static getRepo() {
+    if (!FamilyRepository.familyRepo) {
+      FamilyRepository.familyRepo = new FamilyRepository();
     }
-    async find (){
-        return await this.familyRepository.find({relations:['jobs']});
-    }
-    async findById(id:string){
-        return await this.familyRepository.findOne({where:{id},relations:['jobs']});
-    }
-    async update(family:FamilyInterface,newFamily:Partial<FamilyInterface>){
-      const updated= await this.familyRepository.merge(family,newFamily);
-      return await this.familyRepository.save(updated);
-    }
+
+    return FamilyRepository.familyRepo;
+  }
 }

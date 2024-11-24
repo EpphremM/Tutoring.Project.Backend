@@ -14,6 +14,8 @@ export const registration = async (
 ) => {
   const body: FamilyInterface = req.body;
   const validator = inputValidate(familySchema, body);
+  const { email }: FamilyInterface = body;
+  const family = await FamilyRepository.getRepo().findByEmail(email);
   console.log(validator);
   if (!validator.status) {
     res.status(400).json({
@@ -22,10 +24,17 @@ export const registration = async (
     });
     return;
   }
-  const result = await new FamilyRepository().register(body);
+  if (family) {
+    res.status(400).json({
+      status: "fail",
+      message: "family is already registed",
+    });
+    return;
+  }
+  const result = await FamilyRepository.getRepo().register(body);
   const responseBody: ResponseBody<FamilyInterface> = {
     status: "success",
-    message:"Family registered successully",
+    message: "Family registered successully",
     data: { payload: result },
   };
   res.status(201).json(responseBody);
@@ -38,7 +47,7 @@ export const findAll = async (
   next: NextFunction
 ) => {
   try {
-    const results = await new FamilyRepository().find();
+    const results = await FamilyRepository.getRepo().find();
     console.log("result is ", results);
     if (!results) {
       res.status(400).json({
@@ -50,7 +59,7 @@ export const findAll = async (
     res.status(200).json({ status: "success", data: { payload: results } });
     return;
   } catch (error) {
-    next(new AppError("error occured", 400, error, "operational"));
+    next(new AppError("error occured", 400, "operational",error));
   }
 };
 
@@ -61,7 +70,7 @@ export const findById = async (
 ) => {
   try {
     const { id } = req.params;
-    const result = await new FamilyRepository().findById(id);
+    const result = await FamilyRepository.getRepo().findById(id);
     if (!result) {
       res.status(400).json({
         status: "fail",
@@ -72,7 +81,7 @@ export const findById = async (
     res.status(200).json({ status: "success", data: { payload: result } });
     return;
   } catch (error) {
-    next(new AppError("error occured", 400, error, "operational"));
+    next(new AppError("error occured", 400, "operational",error));
   }
 };
 export const update = async (
@@ -85,9 +94,11 @@ export const update = async (
     const body: Partial<FamilyInterface> = req.body;
     delete body.password;
     const validator = inputValidate(familyUpdateSchema, body);
-    const family: FamilyInterface = await new FamilyRepository().findById(id);
+    const family: FamilyInterface = await FamilyRepository.getRepo().findById(
+      id
+    );
     if (!validator.status) {
-        res.status(400).json({
+      res.status(400).json({
         message: "validation error",
         error: validator.errors,
       });
@@ -100,7 +111,7 @@ export const update = async (
       });
       return;
     }
-    const result = await new FamilyRepository().update(family, body);
+    const result = await FamilyRepository.getRepo().update(family, body);
     if (!result) {
       res.status(400).json({
         status: "fail",
@@ -111,6 +122,6 @@ export const update = async (
     res.status(200).json({ status: "success", data: { payload: result } });
     return;
   } catch (error) {
-    next(new AppError("error occured", 400, error, "operational"));
+    next(new AppError("error occured", 400, "operational",error));
   }
 };

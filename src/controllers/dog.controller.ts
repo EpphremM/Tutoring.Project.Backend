@@ -15,7 +15,7 @@ export const createDog = async (req: Request, res: Response, next: NextFunction)
             }
         })
     }catch(error){
-        next(new AppError("Error occurred.", 404,error, "operational"));
+        next(new AppError("Error occurred.", 404, "operational",error));
     }
    
 }

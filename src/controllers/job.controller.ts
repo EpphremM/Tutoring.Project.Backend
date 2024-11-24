@@ -20,7 +20,7 @@ export const registration = async (
       });
       return;
     }
-    const result: JobInterface = await new JobRepository().register(body);
+    const result: JobInterface = await JobRepository.getRepo().register(body);
     if (!result) {
       res.status(400).json({
         status: "fail",
@@ -40,8 +40,8 @@ export const registration = async (
       new AppError(
         "error occured during creating job",
         400,
-        error,
-        "operational"
+        "operational",
+         error,
       )
     );
   }
@@ -52,7 +52,7 @@ export const findAll = async (
   next: NextFunction
 ) => {
   try {
-    const results:JobInterface[] = await new JobRepository().find();
+    const results:JobInterface[] = await JobRepository.getRepo().find();
     if (!results) {
       res.status(404).json({
         status: "success",
@@ -73,8 +73,8 @@ export const findAll = async (
       new AppError(
         "error occured during finding all jobs",
         400,
-        error,
-        "operational"
+        "operational",
+         error,
       )
     );
   }
@@ -82,7 +82,7 @@ export const findAll = async (
 export const findById=async(req:Request,res:Response,next:NextFunction)=>{
     try{
         const {id}=req.params;
-    const result:JobInterface= await new JobRepository().findById(id);
+    const result:JobInterface= await JobRepository.getRepo().findById(id);
     if(!result){
         res.status(404).
         json({status:"fail",message:"no job found by this id",data:[]});
@@ -96,7 +96,7 @@ export const findById=async(req:Request,res:Response,next:NextFunction)=>{
     res.status(200).json(responseBody);
     return;
     }catch(error){
-        next(new AppError("error occured during fetching the job",404,error,"operational"));
+        next(new AppError("error occured during fetching the job",404,"operational",error));
     }
 
 }
@@ -104,7 +104,7 @@ export const update=async(req:Request,res:Response,next:NextFunction)=>{
 try{
     const body:Partial<JobInterface>=req.body;
     const {id}=req.params;
-    const job:JobInterface=await new JobRepository().findById(id);
+    const job:JobInterface=await JobRepository.getRepo().findById(id);
     const validator=inputValidate(jobUpdateSchema,body);
     if(!validator.status){
         res.status(400).json({status:"fail",message:"validation failed",error:validator.errors})
@@ -113,12 +113,12 @@ try{
         res.status(400).json({status:"fail",message:"Job not found",data:[]})
         return;
     }
-    const result= await new JobRepository().update(job,body)
+    const result= await JobRepository.getRepo().update(job,body)
     const responseBody:ResponseBody<JobInterface>={status:"success",message:"job updated successfully",data:{payload:result}};
     res.status(200).json(responseBody);
     return;
 
 }catch(error){
-    next(new AppError("error occured during updating the user",400,error,"operational"));
+    next(new AppError("error occured during updating the user",400,"operational",error));
 }
 }
