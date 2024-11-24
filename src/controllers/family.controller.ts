@@ -15,7 +15,6 @@ export const registration = async (
   const body: FamilyInterface = req.body;
   const validator = inputValidate(familySchema, body);
   const { email }: FamilyInterface = body;
-  const family = await FamilyRepository.getRepo().findByEmail(email);
   console.log(validator);
   if (!validator.status) {
     res.status(400).json({
@@ -24,6 +23,7 @@ export const registration = async (
     });
     return;
   }
+  const family = await FamilyRepository.getRepo().findByEmail(email);
   if (family) {
     next(new AppError("family is already registered",400,"operational"))
   }

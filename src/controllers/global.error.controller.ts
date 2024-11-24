@@ -7,18 +7,23 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error(err);
+  try {
+    console.error(err);
 
-  let statusCode: number = 500;
-  let message: string = "Internal Server Error";
-  let name:string="operational";
-  let error:Error;
-  if (err.statusCode) {
-    statusCode = err.statusCode;
-    message = err.message;
-    name=err.name
-    error=err.error;
+    let statusCode: number = 500;
+    let message: string = "Internal Server Error";
+    let name: string = "operational";
+    let error: Error;
+    if (err.statusCode) {
+      statusCode = err.statusCode;
+      message = err.message;
+      name = err.name;
+      error = !err.error ? new Error("") : err.error;
+    }
+
+    res.status(statusCode).json({ message: message, name: name, error: error.stack?error.stack:error });
+    return;
+  } catch (err) {
+    return;
   }
-
-  res.status(statusCode).json({ message: message ,name:name,error:error.stack});
 };
