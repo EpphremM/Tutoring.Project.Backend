@@ -61,7 +61,7 @@ export class Job implements JobInterface {
   @Column()
   family_id: string;
   @OneToMany(() => Application, (application) => application.job)
-  application: Application[];
+  applications: Application[];
 
   @ManyToMany(() => Tutor, (tutor) => tutor.job)
   @JoinTable({ name: "tutor_job" })

@@ -5,9 +5,6 @@ import { jobSchema, jobUpdateSchema } from "../zod/schemas/job.schema";
 import { JobRepository } from "../database/repositories/job.repository";
 import { ResponseBody } from "../express/types/response.body";
 import { inputValidate } from '../zod/middlewares/tutor.validation';
-import { FamilyRepository } from "../database/repositories/family.repository";
-import { TransactionInterface } from "../database/interfaces/transaction.interface";
-
 export const registration = async (
   req: Request,
   res: Response,

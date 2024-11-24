@@ -19,7 +19,7 @@ import { ApplicationStatus } from "../enum/status.enum";
     createdAt: Date;
     @Column()
     cover: string;
-    @ManyToOne(()=>Job,(job)=>job.application,{cascade:true})
+    @ManyToOne(()=>Job,(job)=>job.applications,{cascade:true})
     @JoinColumn({name:"job_id"})
     job:Job
 

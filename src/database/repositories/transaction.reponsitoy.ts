@@ -12,19 +12,11 @@ export class TransactionRepository {
     return this.transactionRepository.save(transaction);
   }
   async find() {
-    return await this.transactionRepository.find();
-    // return x.map((transaction)=>({
-    //     id:transaction.id,
-    //     firstName:transaction.firstName,
-    //     lastName:transaction.lastName,
-    //     phoneNumber:transaction.phoneNumber,
-    //     amount:transaction.amount,
-    //     tx_ref:transaction.tx_ref,
-    //     returnUrl:transaction.returnUrl,
-    //     callbackUrl:transaction.callbackUrl,
-    //     createdAt:transaction.createdAt,
-    //     email:transaction.email
-    // }))
+      return  await this.transactionRepository
+    .createQueryBuilder("transaction")
+    .leftJoinAndSelect("transaction.tutor", "tutor")
+    .leftJoinAndSelect("transaction.family", "families")
+    .getMany();
   }
   async findById(id: string) {
     return this.transactionRepository.findOneBy({ id: id });

@@ -12,6 +12,7 @@ import {
 } from "typeorm";
 import { Tutor } from "./tutor.entity";
 import { Family } from "./family.entity";
+import { nullable } from "zod";
 @Entity("transaction")
 export class Transaction implements TransactionInterface {
   @PrimaryGeneratedColumn("uuid")
@@ -52,8 +53,8 @@ export class Transaction implements TransactionInterface {
   tutor_id: string;
 
   @ManyToOne(() => Family, (family) => family.trasactions, { cascade: true })
-  @JoinColumn()
+  @JoinColumn({ name: "family_id" })
   family: Family;
-  @Column({nullable:true})
+  @Column({ nullable: true })
   family_id: string;
 }

@@ -10,7 +10,7 @@ export class JobRepository{
         return await this.jobRpository.save(job);
     }
     async find(){
-        return await this.jobRpository.find({relations:['families']});
+        return await this.jobRpository.find({relations:['family']});
     }
     async findById(id:string){
      return await this.jobRpository.findOne({where:{id}});
