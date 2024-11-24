@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ApplicationInterface
  } from "../interfaces/application.interface";
 import { Job } from "./job.entities";
@@ -22,7 +22,6 @@ import { ApplicationStatus } from "../enum/status.enum";
     @ManyToOne(()=>Job,(job)=>job.applications,{cascade:true})
     @JoinColumn({name:"job_id"})
     job:Job
-
     @Column()
     job_id:string;
     @ManyToOne(()=>Tutor,(tutor)=>tutor.applications,{cascade:true})
@@ -30,5 +29,4 @@ import { ApplicationStatus } from "../enum/status.enum";
     tutor:Tutor
     @Column()
     tutor_id:string
-
  }

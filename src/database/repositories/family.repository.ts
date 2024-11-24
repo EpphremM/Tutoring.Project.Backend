@@ -12,7 +12,14 @@ export class FamilyRepository {
     return await this.familyRepository.save(family);
   }
   async find() {
-    return await this.familyRepository.find({ relations: ["jobs"] });
+    // return await this.familyRepository.find({
+    //   relations: ["jobs"],
+    // });
+    return await this.familyRepository.
+    createQueryBuilder('families').
+    leftJoinAndSelect('families.jobs','jobs').
+    leftJoinAndSelect('families.transactions','transaction').getMany();
+
   }
   async findById(id: string) {
     return await this.familyRepository.findOne({

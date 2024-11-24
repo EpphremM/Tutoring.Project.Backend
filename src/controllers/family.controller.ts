@@ -25,11 +25,7 @@ export const registration = async (
     return;
   }
   if (family) {
-    res.status(400).json({
-      status: "fail",
-      message: "family is already registed",
-    });
-    return;
+    next(new AppError("family is already registered",400,"operational"))
   }
   const result = await FamilyRepository.getRepo().register(body);
   const responseBody: ResponseBody<FamilyInterface> = {

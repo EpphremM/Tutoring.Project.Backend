@@ -39,5 +39,5 @@ export class Family implements FamilyInterface {
   @OneToMany(() => Job, (job) => job.family)
   jobs: Job[];
   @OneToMany(() => Transaction, (transaction) => transaction.family)
-  trasactions: Transaction[];
+  transactions?: Transaction[];
 }
