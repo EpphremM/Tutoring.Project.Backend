@@ -23,7 +23,7 @@ export const globalErrorHandler = (
 
     res.status(statusCode).json({ message: message, name: name, error: error.stack?error.stack:error });
     return;
-  } catch (err) {
-    return;
+  } catch (error) {
+  next(new AppError("error occured",400,"operational",error))
   }
 };

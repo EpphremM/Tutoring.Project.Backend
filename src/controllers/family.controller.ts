@@ -43,7 +43,7 @@ export const findAll = async (
   next: NextFunction
 ) => {
   try {
-    const results = await FamilyRepository.getRepo().find();
+    const results = await FamilyRepository.getRepo().findAll();
     console.log("result is ", results);
     if (!results) {
       res.status(400).json({
@@ -66,13 +66,9 @@ export const findById = async (
 ) => {
   try {
     const { id } = req.params;
-    const result = await FamilyRepository.getRepo().findById(id);
+    const result:FamilyInterface = await FamilyRepository.getRepo().findById(id);
     if (!result) {
-      res.status(400).json({
-        status: "fail",
-        message: "data not found",
-      });
-      return;
+      next(new AppError("data not found",400,"operational"))
     }
     res.status(200).json({ status: "success", data: { payload: result } });
     return;

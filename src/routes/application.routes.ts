@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registration } from "../controllers/application.controller";
+import { findById, registration, update } from '../controllers/application.controller';
 
 export class ApplicationRoutes{
     public router:Router;
@@ -9,5 +9,6 @@ export class ApplicationRoutes{
     }
     setRouter(){
         this.router.route("/").post(registration);
+        this.router.route("/:id").get(findById).patch(update);
     }
 }

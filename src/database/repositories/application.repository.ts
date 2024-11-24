@@ -14,14 +14,13 @@ export class ApplicationRepository {
   }
   async update(
     application: ApplicationInterface,
-    newApplication: ApplicationInterface
+    newApplication: Partial<ApplicationInterface>
   ) {
-    const updated: ApplicationInterface =
-      await this.applicationRepository.merge(application, newApplication);
+    const updated: ApplicationInterface =await this.applicationRepository.merge(application, newApplication);
     return await this.applicationRepository.save(updated);
   }
   async findById(id: string) {
-    return await this.applicationRepository.findBy({ id });
+    return await this.applicationRepository.findOne({where:{ id }});
   }
   static getRepo() {
     if (!ApplicationRepository.appRepo) {

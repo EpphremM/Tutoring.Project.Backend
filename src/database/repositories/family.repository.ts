@@ -11,7 +11,7 @@ export class FamilyRepository {
   async register(family: FamilyInterface) {
     return await this.familyRepository.save(family);
   }
-  async find() {
+  async findAll() {
     // return await this.familyRepository.find({
     //   relations: ["jobs"],
     // });

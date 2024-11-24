@@ -33,10 +33,9 @@ export class Application implements ApplicationInterface {
   job_id: string;
   @ManyToOne(() => Tutor, (tutor) => tutor.applications, {
     cascade: true,
-    nullable: true,
   })
   @JoinColumn({ name: "tutor_id" })
   tutor: Tutor;
-  @Column({ nullable: true })
+  @Column()
   tutor_id: string;
 }

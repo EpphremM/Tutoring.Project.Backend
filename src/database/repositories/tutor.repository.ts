@@ -21,7 +21,7 @@ export class TutorRepository {
   }
   async find() {
     return await this.tutorRepository.find({
-      relations: ["job"],
+      relations: ["job","application"],
     });
   }
   async findOneById(id: string) {

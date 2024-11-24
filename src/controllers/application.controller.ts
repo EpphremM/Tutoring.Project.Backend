@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, response, Response } from "express";
 import { ApplicationInterface } from "../database/interfaces/application.interface";
-import { applicationSchema } from "../zod/schemas/application.schema";
+import { applicationSchema, applicationUpdateSchema } from "../zod/schemas/application.schema";
 import { inputValidate } from "../zod/middlewares/zod.validation";
 import { AppError } from "../express/error/app.error";
 import { ApplicationRepository } from "../database/repositories/application.repository";
@@ -35,3 +35,48 @@ export const registration = async (
     next(new AppError("error occured", 400, "operational", error));
   }
 };
+export const findById=async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+        const {id}=req.params;
+        const result:ApplicationInterface=await ApplicationRepository.getRepo().findById(id);
+        if(!result){
+            next(new AppError("application not found",400,"operational"))
+        }
+   const responseBody:ResponseBody<ApplicationInterface>={status:"success",message:"application registrered successfully",data:{payload:result}};
+   res.status(200).json(responseBody);
+    }catch(error){
+        next(new AppError("error occured",400,"operational",error));
+    }
+   
+}
+export const update=async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+        const body:ApplicationInterface=req.body;
+        const {id}=req.params;
+        const validator=inputValidate(applicationUpdateSchema,body);
+        if(!validator.status){
+            next(new AppError("validation error",400,"operational"))
+        }
+        const application:ApplicationInterface=await ApplicationRepository.getRepo().findById(id);
+        if(!application){
+            next(new AppError("there is no application found",404,"operational"))
+        }
+      const result:ApplicationInterface=await ApplicationRepository.getRepo().update(application,body);
+      const responseBody:ResponseBody<ApplicationInterface>={status:"success",message:"application registered successfully",data:{payload:result}}
+      res.status(200).json(responseBody);
+    }catch(error){
+        next(new AppError("error occured",400,"operational",error))
+    }
+}
+export const findAll=async(req:Request,res:Response,next:NextFunction)=>{
+try{
+ const result=await ApplicationRepository.getRepo().find();
+ if(!result){
+    next(new AppError("application not found",200,"operational"))
+ }
+ const responseBody:ResponseBody<ApplicationInterface[]>={status:"success",message:"Application fetched successfully",data:{payload:result}};
+ res.status(200).json(responseBody);
+}catch(error){
+    next(new AppError("error occured",400,"operational",error))
+}
+}
