@@ -2,6 +2,7 @@ import { Entity,PrimaryGeneratedColumn,Column, CreateDateColumn, ManyToMany, Joi
 import { StudentInterface } from "../interfaces/student.interface";
 import { Subject } from './subject.entity';
 import { Tutor } from "./tutor.entity";
+import { Job } from "./job.entities";
 @Entity('students')
 export class Student implements StudentInterface{
     @PrimaryGeneratedColumn('uuid')
@@ -14,10 +15,10 @@ export class Student implements StudentInterface{
     @JoinTable({name:"student_subject"})
     subject:Subject[]
 
-    @ManyToOne(()=>Tutor,(tutor)=>tutor.student)
-    @JoinColumn({name:"tutor_id"})
-    tutor:Tutor
+    @ManyToOne(()=>Job,(job)=>job.student)
+    @JoinColumn({name:"job_id"})
+    Job:Job
     @Column()
-    tutor_id:string
+    job_id:string
 
 }

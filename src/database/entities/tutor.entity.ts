@@ -85,7 +85,4 @@ export class Tutor implements TutorInterface {
   @ManyToMany(() => Job, (job) => job.tutor)
   @JoinTable({ name: "tutor_job" })
   job: Job[];
-
-  @OneToMany(() => Student, (student) => student.tutor)
-  student: Student;
 }

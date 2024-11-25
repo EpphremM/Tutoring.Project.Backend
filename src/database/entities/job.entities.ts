@@ -21,6 +21,7 @@ import { Family } from "./family.entity";
 import { ExperienceLevel, JobStatus } from "../enum/job.enums";
 import { JobGender } from "../enum/job.enums";
 import { EducationLevel } from "../enum/education.enum";
+import { Student } from "./student.entity";
 @Entity("jobs")
 export class Job implements JobInterface {
   @PrimaryGeneratedColumn("uuid")
@@ -62,7 +63,8 @@ export class Job implements JobInterface {
   family_id: string;
   @OneToMany(() => Application, (application) => application.job)
   applications: Application[];
-
+  @OneToMany(()=>Student,(student)=>student.Job)
+  student:Student[]
   @ManyToMany(() => Tutor, (tutor) => tutor.job)
   @JoinTable({ name: "tutor_job" })
   tutor: Tutor[];
