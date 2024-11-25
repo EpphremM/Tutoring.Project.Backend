@@ -2,10 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { SubjectInterface } from '../database/interfaces/subject.interface';
 import { ZodSchema } from "zod";
 import { inputValidate } from "../zod/middlewares/zod.validation";
-import { subjectSchema } from "../zod/schemas/subject.schema";
+import { subjectSchema, subjectUpdateSchema } from "../zod/schemas/subject.schema";
 import { AppError } from "../express/error/app.error";
-import { SubjectRepository } from "../database/repositories/subject.repository";
+import { SubjectRepository } from '../database/repositories/subject.repository';
 import { ResponseBody } from "../express/types/response.body";
+import { StudentInterface } from "../database/interfaces/student.interface";
 
 export const registration = async (
   req: Request,
@@ -57,5 +58,23 @@ export const findById=async(req:Request,res:Response,next:NextFunction)=>{
     }
 }
 export const update=async(req:Request,res:Response,next:NextFunction)=>{
-    
+    try{
+        const body:SubjectInterface=req.body;
+        const {id}:SubjectInterface=body;
+        const validator=inputValidate(subjectUpdateSchema,body);
+        if(!validator.status){
+            next(new AppError("validation error",400,"operational"))
+        }
+        const subject:SubjectInterface=await SubjectRepository.getRepo().findById(id);
+        if(!subject){
+            next(new AppError("subject is not found by this id",404,"operational"));
+        }
+        const result:SubjectInterface=await SubjectRepository.getRepo().update(subject,body);
+        const responseBody:ResponseBody<SubjectInterface>={status:"success",message:"subject updated successfully",data:{payload:result}};
+        res.status(200).json(responseBody);
+
+    }catch(error){
+        next(new AppError("error occured during updating subject",400,"operational"));
+    }
+
 }
