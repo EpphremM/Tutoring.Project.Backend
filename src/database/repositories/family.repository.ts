@@ -4,6 +4,7 @@ import { FamilyInterface } from "../interfaces/family.interface";
 import { AppDataSource } from "../data.source";
 import { Family } from "../entities/family.entity";
 import { Job } from "../entities/job.entities";
+import { SubjectInterface } from "../interfaces/subject.interface";
 export class FamilyRepository {
   static familyRepo: FamilyRepository | null = null;
   private constructor() {}
@@ -28,7 +29,7 @@ export class FamilyRepository {
     });
   }
   async findByEmail(email: string) {
-    return await this.familyRepository.findOne({
+    return await this.familyRepository.find({
       where: { email },
       relations: ["jobs"],
     });

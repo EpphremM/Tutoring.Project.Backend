@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { registration } from "../controllers/subject.controller";
 
 export class SubjectRoutes{
     public router:Router;
@@ -7,6 +8,6 @@ export class SubjectRoutes{
         this.setRoutes();
     }
     setRoutes(){
-    this.router.route('/');
+    this.router.route('/').post(registration);
     }
 }

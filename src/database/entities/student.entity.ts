@@ -14,7 +14,6 @@ export class Student implements StudentInterface{
     @ManyToMany(()=>Subject,(subject)=>subject.student,{cascade:true})
     @JoinTable({name:"student_subject"})
     subject:Subject[]
-
     @ManyToOne(()=>Job,(job)=>job.student)
     @JoinColumn({name:"job_id"})
     Job:Job
