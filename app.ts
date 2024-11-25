@@ -28,11 +28,13 @@ class App {
     const applicationRoutes = new ApplicationRoutes();
     const transactionRoutes = new TreansactionRoutes();
     const subjectRoutes= new SubjectRoutes();
+    const studentRoutes=new SubjectRoutes();
     this.app.use("/app/v1/family", familyRoutes.router);
     this.app.use("/app/v1/tutor", tutorRoutes.router);
     this.app.use("/app/v1/job", jobRoutes.router);
     this.app.use("/app/v1/transaction", transactionRoutes .router);
     this.app.use("/app/v1/application", applicationRoutes.router);
+    this.app.use("/app/v1/student", studentRoutes.router);
     this.app.use("/app/v1/subject", subjectRoutes.router);
     this.app.use("/dog", dogRouter);
     this.app.use(globalErrorHandler);
