@@ -3,8 +3,8 @@ import { Subject } from "../entities/subject.entity";
 import { StudentInterface } from "../interfaces/student.interface";
 import { SubjectInterface } from "../interfaces/subject.interface";
 
-export class SubejectRepository{
-    static subRep:SubejectRepository|null=null;
+export class SubjectRepository{
+    static subRep:SubjectRepository|null=null;
     private constructor(){}
     subjectRepository=AppDataSource.getRepository<SubjectInterface>(Subject);
 
@@ -22,13 +22,13 @@ export class SubejectRepository{
       return this.subjectRepository.save(updated);
     }
 
-    async findByName(name:StudentInterface){
-        return this.subjectRepository.find({where:name});
+    async findByName(name:string){
+        return this.subjectRepository.find({where:{name}});
     }
     static getRepo(){
-        if(!SubejectRepository.subRep){
-            SubejectRepository.subRep=new SubejectRepository();
+        if(!SubjectRepository.subRep){
+            SubjectRepository.subRep=new SubjectRepository();
         }
-        return SubejectRepository.subRep;
+        return SubjectRepository.subRep;
     }
 }
