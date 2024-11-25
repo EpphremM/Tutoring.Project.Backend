@@ -3,12 +3,13 @@ import express, { Application, Request, Response } from "express";
 import dogRouter from "./src/routes/dog.routes";
 import { FamilyRoutes } from "./src/routes/family.routes";
 import { globalErrorHandler } from "./src/controllers/global.error.controller";
-import { AppError } from "./src/express/error/app.error";
+
 import { TutorRoutes } from "./src/routes/tutor.routes";
 import { Jobroutes } from "./src/routes/job.routes";
 import { TreansactionRoutes } from "./src/routes/transaction.routes";
 import { ApplicationRoutes } from "./src/routes/application.routes";
 import { SubjectRoutes } from "./src/routes/subject.routes";
+import { StudentRoutes } from './src/routes/student.routes';
 
 class App {
   public app: Application;
@@ -28,7 +29,7 @@ class App {
     const applicationRoutes = new ApplicationRoutes();
     const transactionRoutes = new TreansactionRoutes();
     const subjectRoutes= new SubjectRoutes();
-    const studentRoutes=new SubjectRoutes();
+    const studentRoutes=new StudentRoutes();
     this.app.use("/app/v1/family", familyRoutes.router);
     this.app.use("/app/v1/tutor", tutorRoutes.router);
     this.app.use("/app/v1/job", jobRoutes.router);

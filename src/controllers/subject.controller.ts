@@ -22,7 +22,7 @@ export const registration = async (
   const subject: SubjectInterface[] =
     await SubjectRepository.getRepo().findByName(name);
   if (subject) {
-    next(new AppError("subject registered already", 400, "operational"));
+    next(new AppError("subject already registered ", 400, "operational"));
   }
   const result = await SubjectRepository.getRepo().register(body);
   if (!result) {
