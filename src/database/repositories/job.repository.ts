@@ -17,7 +17,8 @@ export class JobRepository {
     return await this.jobRpository.createQueryBuilder('jobs').
     leftJoinAndSelect('jobs.tutor','tutor').
     leftJoinAndSelect('jobs.family','families').
-    leftJoinAndSelect('jobs.applications','application').getMany();
+    leftJoinAndSelect('jobs.applications','application').
+    leftJoinAndSelect('jobs.student','students').getMany();
   }
   async findById(id: string) {
     return await this.jobRpository.findOne({ where: { id } });
