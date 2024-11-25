@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registration } from "../controllers/student.controller";
+import { findAll, findById, registration, update } from "../controllers/student.controller";
 
 export class StudentRoutes{
     public router:Router;
@@ -8,6 +8,7 @@ export class StudentRoutes{
         this.setRoutes();
     }
     setRoutes(){
-    this.router.route('/').post(registration);
+    this.router.route('/').post(registration).get(findAll);
+    this.router.route('/:id').get(findById).patch(update);
     }
 }
