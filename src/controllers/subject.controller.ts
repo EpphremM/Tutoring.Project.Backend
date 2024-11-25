@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { SubjectInterface } from "../database/interfaces/subject.interface";
+import { SubjectInterface } from '../database/interfaces/subject.interface';
 import { ZodSchema } from "zod";
 import { inputValidate } from "../zod/middlewares/zod.validation";
 import { subjectSchema } from "../zod/schemas/subject.schema";
@@ -43,5 +43,16 @@ export const findAll=async(req:Request,res:Response,next:NextFunction)=>{
    res.status(200).json(responseBody);
 }
 export const findById=async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+        const {id}:SubjectInterface=req.body;
+        const result:SubjectInterface=await SubjectRepository.getRepo().findById(id);
+        if(!result){
+            next(new AppError("subject not found",404,"operation"))
+        }
+        const responseBody:ResponseBody<SubjectInterface>={status:"success",message:"subject fetched successfully",data:{payload:result}};
+        res.status(200).json(responseBody);
 
+    }catch(error){
+        next(new AppError("error occured during fetching",400,"operational",error));
+    }
 }

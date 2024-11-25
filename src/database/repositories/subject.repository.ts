@@ -25,7 +25,7 @@ export class SubjectRepository{
     async findByName(name:string){
         return this.subjectRepository.find({where:{name}});
     }
-    static getRepo(){
+        static getRepo(){
         if(!SubjectRepository.subRep){
             SubjectRepository.subRep=new SubjectRepository();
         }
