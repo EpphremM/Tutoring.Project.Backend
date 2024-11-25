@@ -56,3 +56,6 @@ export const findById=async(req:Request,res:Response,next:NextFunction)=>{
         next(new AppError("error occured during fetching",400,"operational",error));
     }
 }
+export const update=async(req:Request,res:Response,next:NextFunction)=>{
+    
+}
