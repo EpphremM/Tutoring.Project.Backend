@@ -13,14 +13,13 @@ export const registration = async (
   res: Response,
   next: NextFunction
 ) => {
-  const body:SubjectInterface = req.body;
+  const body = req.body;
   const validator = inputValidate(subjectSchema, body);
   if (!validator.status) {
     next(new AppError("validation error", 400, "operational"));
   }
-  const { name }:SubjectInterface = body;
-  const subject: SubjectInterface[] =
-    await SubjectRepository.getRepo().findByName(name);
+  const { name,student_id} = body;
+  const subject: SubjectInterface[] = await SubjectRepository.getRepo().findByName(name,student_id)
   if (subject) {
     next(new AppError("subject already registered ", 400, "operational"));
   }
@@ -36,7 +35,8 @@ export const registration = async (
   res.status(200).json(responseBody);
 };
 export const findAll=async(req:Request,res:Response,next:NextFunction)=>{
-   const result:SubjectInterface[]= await SubjectRepository.getRepo().find();
+  const {name,student_id}=req.body;
+   const result:SubjectInterface[]= await SubjectRepository.getRepo().findByName(name,student_id);
    if(!result){
      next(new AppError("error in fetching subject",400,"operational"));
    }

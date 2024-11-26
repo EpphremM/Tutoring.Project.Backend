@@ -11,10 +11,10 @@ export class Student implements StudentInterface{
     grade:string
     @CreateDateColumn()
     createdAt: Date;
-    @ManyToMany(()=>Subject,(subject)=>subject.student,{cascade:true})
+    @ManyToMany(()=>Subject,(subject)=>subject.students,{cascade:true})
     @JoinTable({name:"student_subject"})
-    subject:Subject[]
-    @ManyToOne(()=>Job,(job)=>job.student)
+    subjects:Subject[]
+    @ManyToOne(()=>Job,(job)=>job.student)   
     @JoinColumn({name:"job_id"})
     Job:Job
     @Column()

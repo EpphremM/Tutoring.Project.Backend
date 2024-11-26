@@ -9,8 +9,8 @@ export class Subject implements SubjectInterface{
     name: string;
     @CreateDateColumn()
     createdAt: Date;
-    @ManyToMany(()=>Student,(student)=>student.subject)
+    @ManyToMany(()=>Student,(student)=>student.subjects)
     @JoinTable({name:"student_subject"})
-    student:Student[];
+    students:Student[];
     
 }

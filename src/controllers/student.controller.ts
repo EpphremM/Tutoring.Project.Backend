@@ -5,6 +5,8 @@ import { studentSchema, studentUpdateSchema } from "../zod/schemas/student.schem
 import { AppError } from "../express/error/app.error";
 import { StudentRepository } from "../database/repositories/student.repository";
 import { ResponseBody } from "../express/types/response.body";
+import { SubjectInterface } from '../database/interfaces/subject.interface';
+import { SubjectRepository } from "../database/repositories/subject.repository";
 
 export const registration = async (
   req: Request,
@@ -79,4 +81,33 @@ export const update=async(req:Request,res:Response,next:NextFunction)=>{
   }catch(error){
     next(new AppError("error occured during updating student data",400,"operational"));
   }
+}
+
+export const addSubject=async(req:Request,res:Response,next:NextFunction)=>{
+  try{
+   type addType={
+     student_id:string,
+     subject_id:string
+   }
+   const body=req.body as addType;
+   const {student_id,subject_id}=body;
+   if(!student_id||!subject_id){
+    next(new AppError("The student or subject id is not found",400,"operational"));
+   }
+
+  const student:StudentInterface=await StudentRepository.getRepo().findById(student_id);
+  const subject:SubjectInterface=await SubjectRepository.getRepo().findById(subject_id);
+  if(!student){
+    next(new AppError("Student not found",404,"operational"));
+  }
+  if(!subject){
+    next(new AppError("Subject is not found",404,"operational"));
+  }
+  const result:StudentInterface=await StudentRepository.getRepo().addSubject(student,subject);
+  const responseBody:ResponseBody<StudentInterface>={status:"success",message:"Student and subject connected successfully",data:{payload:result}};
+  res.status(200).json(responseBody);
+}catch(error){
+  console.log(error);
+  next(new AppError("error occured durfing connecting subject and student",400,"operational"));
+}
 }

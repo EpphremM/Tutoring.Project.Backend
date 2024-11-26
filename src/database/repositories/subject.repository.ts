@@ -22,10 +22,14 @@ export class SubjectRepository{
       return this.subjectRepository.save(updated);
     }
 
-    async findByName(name:string){
-        return this.subjectRepository.find({where:{name}});
+    async findByName(name: string, student_id: StudentInterface) {
+        return this.subjectRepository.find({
+            where: {
+                name: name
+            },
+        });
     }
-        static getRepo(){
+    static getRepo(){
         if(!SubjectRepository.subRep){
             SubjectRepository.subRep=new SubjectRepository();
         }
