@@ -14,8 +14,8 @@ export class ExperienceRepository {
   async find() {
     return this.experienceRepository.find();
   }
-  async findById() {
-    return this.experienceRepository.find();
+  async findById(id:string) {
+    return this.experienceRepository.findOne({where:{id}});
   }
   async update(
     experience: ExperienceInterface,

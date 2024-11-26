@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registration } from "../controllers/experience.controller";
+import { findAll, findById, registration, update } from "../controllers/experience.controller";
 
 export class ExperienceRoutes{
     public router:Router;
@@ -8,6 +8,7 @@ export class ExperienceRoutes{
         this.setRoutes();
     }
     setRoutes(){
-        this.router.route('/').post(registration);
+        this.router.route('/').post(registration).get(findAll);
+        this.router.route('/:id').patch(update).get(findById);
     }
 }

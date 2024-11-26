@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { AppError } from "../express/error/app.error";
 import { ExperienceInterface } from "../database/interfaces/experience.interface";
 import { inputValidate } from "../zod/middlewares/zod.validation";
-import { experienceSchema } from "../zod/schemas/experience.schema";
+import { experienceSchema, experienceUpdateSchema } from "../zod/schemas/experience.schema";
 import { ExperienceRepository } from "../database/repositories/experience.repository";
 import { ResponseBody } from "../express/types/response.body";
 import { TutorRepository } from "../database/repositories/tutor.repository";
@@ -36,6 +36,7 @@ export const registration = async (
       data: { payload: result },
     };
     res.status(200).json(responseBody);
+    return;
   } catch (error) {
     console.log(error);
     next(
@@ -48,3 +49,53 @@ export const registration = async (
     );
   }
 };
+export const findAll=async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+     const result:ExperienceInterface[]=await ExperienceRepository.getRepo().find();
+     if(!result){
+        next(new AppError("Experience not found",404,"Operational"))
+     }
+     const responseBody:ResponseBody<ExperienceInterface[]>={status:"success",message:"Experience fetched successfully",data:{payload:result}}
+     res.status(200).json(responseBody);
+     return;
+    }catch(error){
+        next(new AppError("Error occuring fetching experience",400,"Operational"))
+    }
+}
+export const findById=async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+   const {id}=req.params;
+   const result:ExperienceInterface=await ExperienceRepository.getRepo().findById(id);
+   if(!result){
+    next(new AppError("Experience not found",404,"Operational"));
+   }
+   const responseBody:ResponseBody<ExperienceInterface>={status:"success",message:"Experience fetched successfully",data:{payload:result}};
+   res.status(200).json(responseBody);
+   return;
+    }catch(error){
+        next(new AppError("Error occured during fetching experience",400,"Operational"))
+    }
+}
+export const update=async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+    const {id}=req.params;
+    const body:ExperienceInterface=req.body;
+    const validator=inputValidate(experienceUpdateSchema,body);
+    if(!validator.status){
+        next(new AppError("Validation error",400,"Operational"))
+    }
+    const experience:ExperienceInterface=await ExperienceRepository.getRepo().findById(id);
+    if(!experience){
+        next(new AppError("Experience not found to update",400,"Operational"))
+    }
+    const result:ExperienceInterface=await ExperienceRepository.getRepo().update(experience,body);
+    if(!result){
+        next(new AppError("Experience  not updated",400,"Operational"))
+    }
+    const responseBody:ResponseBody<ExperienceInterface>={status:"success",message:"Experience updated successfully",data:{payload:result}}
+    res.status(200).json(responseBody);
+  return;
+    }catch(error){
+        next(new AppError("Error occured during updating an Experience",400,"Operational"))
+    }
+}
