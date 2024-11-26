@@ -117,3 +117,21 @@ export const update = async (
     next(new AppError("error occured", 400, "operational",error));
   }
 };
+export const Delete=async(req:Request,res:Response,next:NextFunction)=>{
+  try{
+     const {id}=req.params;
+     const application=await FamilyRepository.getRepo().findById(id);
+     if(!application){
+      next(new AppError("Family to found",404,"Operational"));
+     }
+     const result= await FamilyRepository.getRepo().Delete(id);
+     if(!result){
+      next(new AppError("Family not deleted",400,"Operational"));
+     }
+     const responseBody={status:"success",message:"Family deleted successfully"};
+     res.status(200).json(responseBody);
+
+  }catch(error){
+    next(new AppError("Error occured during family",400,"Operational"))
+  }
+}

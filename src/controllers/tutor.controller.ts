@@ -193,3 +193,21 @@ const responseBody:ResponseBody<TutorInterface>={status:"success",message:"tutor
   next(new AppError("error occured",404,"operational",error))
  }
 };
+export const Delete=async(req:Request,res:Response,next:NextFunction)=>{
+  try{
+     const {id}=req.params;
+     const application=await TutorRepository.getRepo().findOneById(id);
+     if(!application){
+      next(new AppError("Tutor to found",404,"Operational"));
+     }
+     const result= await TutorRepository.getRepo().Delete(id);
+     if(!result){
+      next(new AppError("Tutor not deleted",400,"Operational"));
+     }
+     const responseBody={status:"success",message:"Tutor deleted successfully"};
+     res.status(200).json(responseBody);
+
+  }catch(error){
+    next(new AppError("Error occured during tutor",400,"Operational"))
+  }
+}

@@ -37,6 +37,9 @@ export class TutorRepository {
     const updated = await this.tutorRepository.merge(tutor, newTutor);
     return await this.tutorRepository.save(updated);
   }
+  async Delete(id:string){
+    return await this.tutorRepository.delete({id})
+  }
   static getRepo() {
     if (!TutorRepository.TutorRepo) {
       TutorRepository.TutorRepo = new TutorRepository();

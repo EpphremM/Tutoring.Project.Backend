@@ -33,6 +33,9 @@ export class TransactionRepository {
     );
     return this.transactionRepository.save(updated);
   }
+  async Delete(id:string){
+    return this.transactionRepository.delete({id})
+  }
  static getRepo(){
   if(!TransactionRepository.transactionRepo){
     TransactionRepository.transactionRepo=new TransactionRepository();
