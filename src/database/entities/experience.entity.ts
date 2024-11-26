@@ -7,7 +7,7 @@ export class Experience implements ExperienceInterface{
     @PrimaryGeneratedColumn('uuid')
     id: string;
     @Column()
-    worked_at: string;
+    workedAt: string;
     @Column()
     description: string;
     @Column()

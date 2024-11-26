@@ -24,6 +24,7 @@ export class TutorRepository {
       .createQueryBuilder("tutor")
       .leftJoinAndSelect("tutor.job", "jobs")
       .leftJoinAndSelect('tutor.applications','application')
+      .leftJoinAndSelect('tutor.experience','experiences')
       .getMany();
   }
   async findOneById(id: string) {

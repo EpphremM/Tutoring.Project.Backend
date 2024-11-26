@@ -8,15 +8,16 @@ export const globalErrorHandler = (
   next: NextFunction
 ) => {
   console.error("Error:", err);
-
+const status="fail";
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
   const name = err.name || "Operational";
   const errorDetails = err.error || null;
 
   res.status(statusCode).json({
+    status,
     message,
     name,
-    error: errorDetails.message,
+    error: errorDetails,
   });
 };

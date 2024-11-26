@@ -10,6 +10,7 @@ import { TreansactionRoutes } from "./src/routes/transaction.routes";
 import { ApplicationRoutes } from "./src/routes/application.routes";
 import { SubjectRoutes } from "./src/routes/subject.routes";
 import { StudentRoutes } from './src/routes/student.routes';
+import { ExperienceRoutes } from "./src/routes/experience.routes";
 
 class App {
   public app: Application;
@@ -30,6 +31,7 @@ class App {
     const transactionRoutes = new TreansactionRoutes();
     const subjectRoutes= new SubjectRoutes();
     const studentRoutes=new StudentRoutes();
+    const experienceRoutes=new ExperienceRoutes();
     this.app.use("/app/v1/family", familyRoutes.router);
     this.app.use("/app/v1/tutor", tutorRoutes.router);
     this.app.use("/app/v1/job", jobRoutes.router);
@@ -37,6 +39,7 @@ class App {
     this.app.use("/app/v1/application", applicationRoutes.router);
     this.app.use("/app/v1/student", studentRoutes.router);
     this.app.use("/app/v1/subject", subjectRoutes.router);
+    this.app.use("/app/v1/experience", experienceRoutes.router);
     this.app.use("/dog", dogRouter);
     this.app.use(globalErrorHandler);
   }
