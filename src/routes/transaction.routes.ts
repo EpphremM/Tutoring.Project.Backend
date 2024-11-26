@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { findAll, update } from '../controllers/transaction.controller';
+import { Delete, findAll, update } from '../controllers/transaction.controller';
 import { registration } from '../controllers/transaction.controller';
 import { findById } from '../controllers/transaction.controller';
 export class TreansactionRoutes{
@@ -10,6 +10,6 @@ export class TreansactionRoutes{
     }
     setRouters(){
   this.router.route('/').post(registration).get(findAll);
-  this.router.route('/:id').get(findById).patch(update);
+  this.router.route('/:id').get(findById).patch(update).delete(Delete);
     }
 }

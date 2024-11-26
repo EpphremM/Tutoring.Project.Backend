@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { JobRepository } from '../database/repositories/job.repository';
-import { findAll, findById, registration, update } from "../controllers/job.controller";
+import { Delete, findAll, findById, registration, update } from "../controllers/job.controller";
 
 export class Jobroutes{
     public router:Router
@@ -10,6 +10,6 @@ export class Jobroutes{
     }
     setRoutes(){
        this.router.route('/').post(registration).get(findAll);
-       this.router.route('/:id').get(findById).patch(update);
+       this.router.route('/:id').get(findById).patch(update).delete(Delete);
     }
 }

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { findById, registration } from "../controllers/family.controller";
+import { Delete, findById, registration } from "../controllers/family.controller";
 import { findAll } from "../controllers/family.controller";
 import {update} from "../controllers/family.controller";
 export class FamilyRoutes {
@@ -10,6 +10,6 @@ export class FamilyRoutes {
   }
   private setRoutes() {
     this.router.route("/").get(findAll).post(registration);
-    this.router.route("/:id").get(findById).patch(update);
+    this.router.route("/:id").get(findById).patch(update).delete(Delete);
   }
 }
