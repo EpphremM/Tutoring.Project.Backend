@@ -4,6 +4,8 @@ import { TransactionInterface } from "../interfaces/transaction.interface";
 import { promises } from "dns";
 
 export class TransactionRepository {
+  static transactionRepo:TransactionRepository|null=null;
+  private constructor(){}
   transactionRepository =
     AppDataSource.getRepository<TransactionInterface>(Transaction);
   async register(
@@ -31,4 +33,10 @@ export class TransactionRepository {
     );
     return this.transactionRepository.save(updated);
   }
+ static getRepo(){
+  if(!TransactionRepository.transactionRepo){
+    TransactionRepository.transactionRepo=new TransactionRepository();
+  }
+  return TransactionRepository.transactionRepo;
+ }
 }

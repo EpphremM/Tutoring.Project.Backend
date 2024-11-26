@@ -41,7 +41,7 @@ export const registration=async(req:Request,res:Response,next:NextFunction)=>{
         if(!family&&!tutor){
         next(new AppError("can not register transaction with empty tutor or family",400,"operational"))
         }
-        const result:TransactionInterface=await new TransactionRepository().register(body);
+        const result:TransactionInterface=await TransactionRepository.getRepo().register(body);
         const responseBody:ResponseBody<TransactionInterface>={status:"success",message:"transaction created successfully",data:{payload:result}}
        res.status(200).json(responseBody);
        return;
@@ -55,7 +55,7 @@ export const registration=async(req:Request,res:Response,next:NextFunction)=>{
 export const findAll=async (req:Request,res:Response,next:NextFunction)=>{
 try{
     const result:TransactionInterface[]
-    = await new TransactionRepository().find()
+    = await  TransactionRepository.getRepo().find()
     if(!result){
         next(new AppError("there is no transaction record",200,"operational"))
     }
@@ -69,7 +69,7 @@ try{
 export const findById=async(req:Request,res:Response,next:NextFunction)=>{
     try{
         const {id}=req.params;
-      const result:TransactionInterface=await new TransactionRepository().findById(id)
+      const result:TransactionInterface=await TransactionRepository.getRepo().findById(id)
       console.log(result);
       if(!result){
         res.status(404).json({
@@ -93,7 +93,7 @@ export const update=async(req:Request,res:Response,next:NextFunction)=>{
      delete body.tx_ref;
      const {id}=req.params;
      const validator=inputValidate(transactionUpdateSchema,body);
-     const transaction:TransactionInterface=await new TransactionRepository().findById(id);
+     const transaction:TransactionInterface=await TransactionRepository.getRepo().findById(id);
      if(!validator.status){
         res.status(400).json({
             status:"fail",
@@ -109,7 +109,7 @@ export const update=async(req:Request,res:Response,next:NextFunction)=>{
         })
         return;
      }
-     const result:TransactionInterface=await new  TransactionRepository().update(transaction,body)
+     const result:TransactionInterface=await  TransactionRepository.getRepo().update(transaction,body)
      const requestBody:ResponseBody<TransactionInterface>={status:"success",message:"updated successfully",data:{payload:result}}
     res.status(200).json(requestBody);
     }catch(error){

@@ -22,6 +22,10 @@ export class ApplicationRepository {
   async findById(id: string) {
     return await this.applicationRepository.findOne({where:{ id }});
   }
+  async Delete(id:string){
+   return await this.applicationRepository.delete({id});
+
+  }
   static getRepo() {
     if (!ApplicationRepository.appRepo) {
       ApplicationRepository.appRepo = new ApplicationRepository();

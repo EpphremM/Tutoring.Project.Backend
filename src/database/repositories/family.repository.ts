@@ -5,6 +5,7 @@ import { AppDataSource } from "../data.source";
 import { Family } from "../entities/family.entity";
 import { Job } from "../entities/job.entities";
 import { SubjectInterface } from "../interfaces/subject.interface";
+import { Delete } from '../../controllers/application.controller';
 export class FamilyRepository {
   static familyRepo: FamilyRepository | null = null;
   private constructor() {}
@@ -38,7 +39,9 @@ export class FamilyRepository {
     const updated = await this.familyRepository.merge(family, newFamily);
     return await this.familyRepository.save(updated);
   }
-
+  async Delete(id:string){
+    return await this.familyRepository.delete(id)
+  }
   static getRepo() {
     if (!FamilyRepository.familyRepo) {
       FamilyRepository.familyRepo = new FamilyRepository();

@@ -27,6 +27,9 @@ export class ExperienceRepository {
   async findByWorkedAt(workedAt: string) {
     return this.experienceRepository.findOne({ where: {workedAt} });
   }
+  async Delete(id:string){
+    return this.experienceRepository.delete({id});
+  }
   static getRepo() {
     if (!ExperienceRepository.expericeRepo) {
       ExperienceRepository.expericeRepo = new ExperienceRepository();

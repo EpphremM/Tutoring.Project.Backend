@@ -29,6 +29,9 @@ export class SubjectRepository{
             },
         });
     }
+    async Delete(id:string){
+        return await this.subjectRepository.delete({id})
+    }
     static getRepo(){
         if(!SubjectRepository.subRep){
             SubjectRepository.subRep=new SubjectRepository();

@@ -27,6 +27,9 @@ export class JobRepository {
     const updated = await this.jobRpository.merge(job, newJob);
     return await this.jobRpository.save(updated);
   }
+  async Delete(id:string){
+    return await this.jobRpository.delete({id})
+  }
   static getRepo() {
     if (!JobRepository.jobRepo) {
       JobRepository.jobRepo = new JobRepository();

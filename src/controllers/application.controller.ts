@@ -80,3 +80,21 @@ try{
     next(new AppError("error occured",400,"operational",error))
 }
 }
+export const Delete=async(req:Request,res:Response,next:NextFunction)=>{
+  try{
+     const {id}=req.params;
+     const application=await ApplicationRepository.getRepo().findById(id);
+     if(!application){
+      next(new AppError("Application to found",404,"Operational"));
+     }
+     const result= await ApplicationRepository.getRepo().Delete(id);
+     if(!result){
+      next(new AppError("Application not deleted",400,"Operational"));
+     }
+     const responseBody={status:"success",message:"Application deleted successfully"};
+     res.status(200).json(responseBody);
+
+  }catch(error){
+    next(new AppError("Error occured during applicati",400,"Operational"))
+  }
+}

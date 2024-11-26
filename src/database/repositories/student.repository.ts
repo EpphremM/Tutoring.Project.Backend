@@ -33,6 +33,9 @@ export class StudentRepository {
     );
     return this.studentRepository.save(update);
   }
+  async Delete(id:string){
+    return this.studentRepository.delete({id})
+  }
   async addSubject(student: StudentInterface, subject: SubjectInterface) {
     student.subjects
       ? student.subjects.push(subject)

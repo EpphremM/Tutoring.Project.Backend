@@ -5,10 +5,6 @@ import { inputValidate } from "../zod/middlewares/zod.validation";
 import { experienceSchema, experienceUpdateSchema } from "../zod/schemas/experience.schema";
 import { ExperienceRepository } from "../database/repositories/experience.repository";
 import { ResponseBody } from "../express/types/response.body";
-import { TutorRepository } from "../database/repositories/tutor.repository";
-import { TutorInterface } from "../database/interfaces/tutor.interface";
-import { UUID } from "crypto";
-
 export const registration = async (
   req: Request,
   res: Response,
