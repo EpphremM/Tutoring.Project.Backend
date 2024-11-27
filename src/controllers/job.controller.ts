@@ -5,6 +5,7 @@ import { jobSchema, jobUpdateSchema } from "../zod/schemas/job.schema";
 import { JobRepository } from "../database/repositories/job.repository";
 import { ResponseBody } from "../express/types/response.body";
 import { inputValidate } from "../zod/middlewares/tutor.validation";
+import { JobFilterDto } from "../dto/filter.dto";
 export const registration = async (
   req: Request,
   res: Response,
@@ -171,5 +172,18 @@ export const Delete=async(req:Request,res:Response,next:NextFunction)=>{
 
   }catch(error){
     next(new AppError("Error occured during job",400,"Operational"))
+  }
+}
+export const fileterJobs=async(req:Request,res:Response,next:NextFunction)=>{
+  try{
+    const fileterDto:JobFilterDto=req.query as unknown as JobFilterDto;
+    const result=await JobRepository.getRepo().filterJob(fileterDto);
+    if(!result){
+      next(new AppError("Can not found filtered data",400,"Operaional"))
+    }
+   const responseBody:ResponseBody<JobInterface[]>={status:'success',message:"filtered data fetched successfully",data:{payload:result}};
+   res.status(200).json(responseBody);
+  }catch(error){
+    next(new AppError("Error occured during filtering data",400,"Operational",error))
   }
 }
