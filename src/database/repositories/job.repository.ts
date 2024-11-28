@@ -6,6 +6,7 @@ import { JobInterface } from "../interfaces/job.interface";
 import { TutorRepository } from "./tutor.repository";
 import { JobFilterDto } from "../../dto/filter.dto";
 import { title } from "process";
+import { PaginationDto } from '../../dto/pagination.dto';
 
 export class JobRepository {
   static jobRepo: JobRepository | null = null;
@@ -14,16 +15,30 @@ export class JobRepository {
   async register(job: JobInterface) {
     return await this.jobRpository.save(job);
   }
-  async find() {
+  async find(paginationDto:PaginationDto) {
+    const {status}=new JobFilterDto();
     // return await this.jobRpository.find({ relations: ["family", "tutor","application"] });
-    return await this.jobRpository
+    const {page,limit}=paginationDto;
+    const parsedPage = Number(page) || 1;
+    const parsedLimit = Number(limit) || 10;
+    const skip = (parsedPage - 1) * parsedLimit;
+   const query= this.jobRpository
       .createQueryBuilder("jobs")
       .leftJoinAndSelect("jobs.tutor", "tutor")
       .leftJoinAndSelect("jobs.family", "families")
       .leftJoinAndSelect("jobs.applications", "application")
       .leftJoinAndSelect("jobs.students", "students")
       .leftJoinAndSelect("students.subjects", "subjects")
-      .getMany();
+      .skip(skip)
+      .take(parsedLimit);
+      const [jobs,total]=await query.getManyAndCount();
+      const totalPages=(total/parsedPage);
+      return {
+        jobs,
+        limit:parsedLimit,
+        total,
+        totalPages
+      }
   }
   async findById(id: string) {
     return await this.jobRpository.findOne({ where: { id } });
@@ -35,10 +50,14 @@ export class JobRepository {
   async Delete(id: string) {
     return await this.jobRpository.delete({ id });
   }
-  async filterJob(Dto: JobFilterDto) {
-    return await this.applyFilters(Dto);
+  async filterJob(Dto: JobFilterDto,paginationDto:PaginationDto) {
+    return await this.applyFilters(Dto,paginationDto);
   }
-  private async applyFilters(filterDto: JobFilterDto) {
+  private async applyFilters(filterDto: JobFilterDto,paginationDto:PaginationDto) {
+    const {page,limit}=paginationDto;
+    const parsedPage = Number(page) || 1;
+    const parsedLimit = Number(limit) || 10;
+    const skip = (parsedPage - 1) * parsedLimit;
     const query = this.jobRpository
       .createQueryBuilder("jobs")
       .leftJoinAndSelect("jobs.students", "students")
@@ -76,14 +95,6 @@ export class JobRepository {
       query.andWhere("jobs.weeklyFrequency = :weeklyFrequency", {
         weeklyFrequency,
       });
-    // if (Array.isArray(students) && students.length > 0) {
-    //   query.andWhere("students.grade IN (:...students)", { students });
-    // }
-    // if (Array.isArray(subjects) && subjects.length > 0) {
-    //   query.andWhere("subjects.name IN (:...subjects)", { subjects });
-    // }
-
-    // console.log("STUDENTS: ", students);
     if (students) {
       query.andWhere("students.grade IN (:...students)", {
         students: students.includes(",") ? students.split(",") : [students],
@@ -110,9 +121,15 @@ export class JobRepository {
       query.andWhere("jobs.educationLevel = :educationLevel", {
         educationLevel,
       });
-    // console.log(query.getQuery());
-    // console.log(query.getParameters())
-    return await query.getMany();
+    query.skip(skip).take(parsedLimit);
+    const [jobs,total]=await query.getManyAndCount();
+    const totalPages=Math.ceil((total/parsedPage));
+    return{
+      jobs,
+      total,
+      parsedLimit,
+      totalPages
+    }
   }
   static getRepo() {
     if (!JobRepository.jobRepo) {

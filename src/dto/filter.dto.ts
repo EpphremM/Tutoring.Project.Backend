@@ -3,9 +3,6 @@ import {
   IsString,
   IsNumber,
   IsDateString,
-  Validate,
-  IsArray,
-  ArrayMinSize,
 } from "class-validator";
 export class JobFilterDto {
   @IsOptional() @IsString() status?: string;

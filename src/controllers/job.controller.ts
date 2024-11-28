@@ -6,6 +6,8 @@ import { JobRepository } from "../database/repositories/job.repository";
 import { ResponseBody } from "../express/types/response.body";
 import { inputValidate } from "../zod/middlewares/tutor.validation";
 import { JobFilterDto } from "../dto/filter.dto";
+import { JobService } from "../services/pagination.service";
+import { PaginationDto } from '../dto/pagination.dto';
 export const registration = async (
   req: Request,
   res: Response,
@@ -55,7 +57,8 @@ export const findAll = async (
 ) => {
   try {
     console.log("russulttttt is");
-    const results: JobInterface[] = await JobRepository.getRepo().find();
+    const pageDto: PaginationDto = req.query as unknown as PaginationDto;
+    const results = await JobRepository.getRepo().find(pageDto);
     if (!results) {
       res.status(404).json({
         status: "success",
@@ -64,7 +67,7 @@ export const findAll = async (
       });
       return;
     }
-    const responseBody: ResponseBody<JobInterface[]> = {
+    const responseBody = {
       status: "success",
       message: "Jobs fetched successfully",
       data: { payload: results },
@@ -187,12 +190,13 @@ export const filter = async (
 ) => {
   try {
     const fileterDto: JobFilterDto = req.query as unknown as JobFilterDto;
+    const paginationDto:PaginationDto=req.query as unknown as PaginationDto;
     console.log("DTO", fileterDto);
-    const result = await JobRepository.getRepo().filterJob(fileterDto);
+    const result = await JobRepository.getRepo().filterJob(fileterDto,paginationDto);
     if (!result) {
       next(new AppError("Can not found filtered data", 400, "Operaional"));
     }
-    const responseBody: ResponseBody<JobInterface[]> = {
+    const responseBody= {
       status: "success",
       message: "filtered data fetched successfully",
       data: { payload: result },
