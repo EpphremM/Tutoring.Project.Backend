@@ -7,6 +7,7 @@ import { TutorRepository } from "./tutor.repository";
 import { JobFilterDto } from "../../dto/filter.dto";
 import { title } from "process";
 import { PaginationDto } from '../../dto/pagination.dto';
+import { OrderByDto } from "../../dto/orderBy.dto";
 
 export class JobRepository {
   static jobRepo: JobRepository | null = null;
@@ -17,7 +18,6 @@ export class JobRepository {
   }
   async find(paginationDto:PaginationDto) {
     const {status}=new JobFilterDto();
-    // return await this.jobRpository.find({ relations: ["family", "tutor","application"] });
     const {page,limit}=paginationDto;
     const parsedPage = Number(page) || 1;
     const parsedLimit = Number(limit) || 10;
@@ -50,11 +50,16 @@ export class JobRepository {
   async Delete(id: string) {
     return await this.jobRpository.delete({ id });
   }
-  async filterJob(Dto: JobFilterDto,paginationDto:PaginationDto) {
-    return await this.applyFilters(Dto,paginationDto);
+  async filterJob(Dto: JobFilterDto,paginationDto:PaginationDto,orderDto:OrderByDto) {
+    return await this.applyFilters(Dto,paginationDto,orderDto);
   }
-  private async applyFilters(filterDto: JobFilterDto,paginationDto:PaginationDto) {
+  private async applyFilters(filterDto: JobFilterDto,paginationDto:PaginationDto,orderDto:OrderByDto) {
     const {page,limit}=paginationDto;
+    let {sortFields,sortDirection}=orderDto;
+    const sort =sortFields.includes(",")?sortFields.split(","):[sortFields]
+   const direction=sortDirection;
+   console.log("sort",sort);
+   console.log("dirction",direction);
     const parsedPage = Number(page) || 1;
     const parsedLimit = Number(limit) || 10;
     const skip = (parsedPage - 1) * parsedLimit;
@@ -106,7 +111,7 @@ export class JobRepository {
         subjects: subjects.includes(",") ? subjects.split(",") : [subjects],
       });
     }
-
+   
     if (workPeriod)
       query.andWhere("jobs.workPeriod = :workPeriod", { workPeriod });
     if (startingDate)
@@ -121,7 +126,13 @@ export class JobRepository {
       query.andWhere("jobs.educationLevel = :educationLevel", {
         educationLevel,
       });
-    query.skip(skip).take(parsedLimit);
+    const orderByClauses = {};
+
+sort.forEach(field => {
+    orderByClauses[`jobs.${field}`] = direction;
+});
+query.orderBy(orderByClauses);
+    query.skip(skip).take(parsedLimit).orderBy(orderByClauses);
     const [jobs,total]=await query.getManyAndCount();
     const totalPages=Math.ceil((total/parsedPage));
     return{

@@ -7,7 +7,8 @@ import { ResponseBody } from "../express/types/response.body";
 import { inputValidate } from "../zod/middlewares/tutor.validation";
 import { JobFilterDto } from "../dto/filter.dto";
 import { JobService } from "../services/pagination.service";
-import { PaginationDto } from '../dto/pagination.dto';
+import { PaginationDto } from "../dto/pagination.dto";
+import { OrderByDto } from "../dto/orderBy.dto";
 export const registration = async (
   req: Request,
   res: Response,
@@ -190,13 +191,18 @@ export const filter = async (
 ) => {
   try {
     const fileterDto: JobFilterDto = req.query as unknown as JobFilterDto;
-    const paginationDto:PaginationDto=req.query as unknown as PaginationDto;
+    const paginationDto: PaginationDto = req.query as unknown as PaginationDto;
+    const sortDto: OrderByDto = req.query as unknown as OrderByDto;
     console.log("DTO", fileterDto);
-    const result = await JobRepository.getRepo().filterJob(fileterDto,paginationDto);
+    const result = await JobRepository.getRepo().filterJob(
+      fileterDto,
+      paginationDto,
+      sortDto
+    );
     if (!result) {
       next(new AppError("Can not found filtered data", 400, "Operaional"));
     }
-    const responseBody= {
+    const responseBody = {
       status: "success",
       message: "filtered data fetched successfully",
       data: { payload: result },
