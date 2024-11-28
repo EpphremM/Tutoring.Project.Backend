@@ -60,7 +60,7 @@ export class Job implements JobInterface {
   @OneToMany(() => Application, (application) => application.job)
   applications: Application[];
   @OneToMany(()=>Student,(student)=>student.Job)
-  student:Student[]
+  students:Student[]
   @ManyToMany(() => Tutor, (tutor) => tutor.job)
   @JoinTable({ name: "tutor_job" })
   tutor: Tutor[];

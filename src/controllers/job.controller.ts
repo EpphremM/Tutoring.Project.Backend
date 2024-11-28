@@ -156,34 +156,54 @@ export const update = async (
     );
   }
 };
-export const Delete=async(req:Request,res:Response,next:NextFunction)=>{
-  try{
-     const {id}=req.params;
-     const application=await JobRepository.getRepo().findById(id);
-     if(!application){
-      next(new AppError("Job to found",404,"Operational"));
-     }
-     const result= await JobRepository.getRepo().Delete(id);
-     if(!result){
-      next(new AppError("Job not deleted",400,"Operational"));
-     }
-     const responseBody={status:"success",message:"Job deleted successfully"};
-     res.status(200).json(responseBody);
-
-  }catch(error){
-    next(new AppError("Error occured during job",400,"Operational"))
-  }
-}
-export const fileterJobs=async(req:Request,res:Response,next:NextFunction)=>{
-  try{
-    const fileterDto:JobFilterDto=req.query as unknown as JobFilterDto;
-    const result=await JobRepository.getRepo().filterJob(fileterDto);
-    if(!result){
-      next(new AppError("Can not found filtered data",400,"Operaional"))
+export const Delete = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const application = await JobRepository.getRepo().findById(id);
+    if (!application) {
+      next(new AppError("Job to found", 404, "Operational"));
     }
-   const responseBody:ResponseBody<JobInterface[]>={status:'success',message:"filtered data fetched successfully",data:{payload:result}};
-   res.status(200).json(responseBody);
-  }catch(error){
-    next(new AppError("Error occured during filtering data",400,"Operational",error))
+    const result = await JobRepository.getRepo().Delete(id);
+    if (!result) {
+      next(new AppError("Job not deleted", 400, "Operational"));
+    }
+    const responseBody = {
+      status: "success",
+      message: "Job deleted successfully",
+    };
+    res.status(200).json(responseBody);
+  } catch (error) {
+    next(new AppError("Error occured during job", 400, "Operational"));
   }
-}
+};
+export const filter = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const fileterDto: JobFilterDto = req.query as unknown as JobFilterDto;
+    console.log("DTO", fileterDto);
+    const result = await JobRepository.getRepo().filterJob(fileterDto);
+    if (!result) {
+      next(new AppError("Can not found filtered data", 400, "Operaional"));
+    }
+    const responseBody: ResponseBody<JobInterface[]> = {
+      status: "success",
+      message: "filtered data fetched successfully",
+      data: { payload: result },
+    };
+    res.status(200).json(responseBody);
+    return;
+  } catch (error) {
+    console.log(error);
+    return next(
+      new AppError("Error occured during filtering data", 400, "Operational")
+    );
+    // next();
+  }
+};

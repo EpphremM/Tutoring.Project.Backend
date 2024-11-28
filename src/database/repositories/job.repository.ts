@@ -4,7 +4,7 @@ import { Job } from "../entities/job.entities";
 import { FamilyInterface } from "../interfaces/family.interface";
 import { JobInterface } from "../interfaces/job.interface";
 import { TutorRepository } from "./tutor.repository";
-import { JobFilterDto } from '../../dto/filter.dto';
+import { JobFilterDto } from "../../dto/filter.dto";
 import { title } from "process";
 
 export class JobRepository {
@@ -16,11 +16,14 @@ export class JobRepository {
   }
   async find() {
     // return await this.jobRpository.find({ relations: ["family", "tutor","application"] });
-    return await this.jobRpository.createQueryBuilder('jobs').
-    leftJoinAndSelect('jobs.tutor','tutor').
-    leftJoinAndSelect('jobs.family','families').
-    leftJoinAndSelect('jobs.applications','application').
-    leftJoinAndSelect('jobs.student','students').getMany();
+    return await this.jobRpository
+      .createQueryBuilder("jobs")
+      .leftJoinAndSelect("jobs.tutor", "tutor")
+      .leftJoinAndSelect("jobs.family", "families")
+      .leftJoinAndSelect("jobs.applications", "application")
+      .leftJoinAndSelect("jobs.students", "students")
+      .leftJoinAndSelect("students.subjects", "subjects")
+      .getMany();
   }
   async findById(id: string) {
     return await this.jobRpository.findOne({ where: { id } });
@@ -29,16 +32,18 @@ export class JobRepository {
     const updated = await this.jobRpository.merge(job, newJob);
     return await this.jobRpository.save(updated);
   }
-  async Delete(id:string){
-    return await this.jobRpository.delete({id})
+  async Delete(id: string) {
+    return await this.jobRpository.delete({ id });
   }
-  async filterJob(Dto:JobFilterDto){
-    return this.applyFilters(Dto);
-  
+  async filterJob(Dto: JobFilterDto) {
+    return await this.applyFilters(Dto);
+  }
+  private async applyFilters(filterDto: JobFilterDto) {
+    const query = this.jobRpository
+      .createQueryBuilder("jobs")
+      .leftJoinAndSelect("jobs.students", "students")
+      .leftJoinAndSelect("students.subjects", "subjects");
 
-  }
-  private applyFilters(filterDto: JobFilterDto) {
-   const query=this.jobRpository.createQueryBuilder('jobs');
     const {
       status,
       minDuration,
@@ -50,27 +55,64 @@ export class JobRepository {
       startingDate,
       requiredGender,
       experience,
-      responsibility,
       educationLevel,
-      createdAfter,
-      createdBefore,
+      students,
+      subjects,
     } = filterDto;
+    if (status) query.andWhere("jobs.status = :status", { status });
+    if (minDuration)
+      query.andWhere("jobs.duration >= :minDuration", { minDuration });
+    if (maxDuration)
+      query.andWhere("jobs.duration <= :maxDuration", { maxDuration });
+    if (minHourlyBudget)
+      query.andWhere("jobs.hourlyBudget >= :minHourlyBudget", {
+        minHourlyBudget,
+      });
+    if (maxHourlyBudget)
+      query.andWhere("jobs.hourlyBudget <= :maxHourlyBudget", {
+        maxHourlyBudget,
+      });
+    if (weeklyFrequency)
+      query.andWhere("jobs.weeklyFrequency = :weeklyFrequency", {
+        weeklyFrequency,
+      });
+    // if (Array.isArray(students) && students.length > 0) {
+    //   query.andWhere("students.grade IN (:...students)", { students });
+    // }
+    // if (Array.isArray(subjects) && subjects.length > 0) {
+    //   query.andWhere("subjects.name IN (:...subjects)", { subjects });
+    // }
 
-    if (status) query.andWhere("job.status = :status", { status });
-    if (minDuration) query.andWhere("job.duration >= :minDuration", { minDuration });
-    if (maxDuration) query.andWhere("job.duration <= :maxDuration", { maxDuration });
-    if (minHourlyBudget) query.andWhere("job.hourlyBudget >= :minHourlyBudget", { minHourlyBudget });
-    if (maxHourlyBudget) query.andWhere("job.hourlyBudget <= :maxHourlyBudget", { maxHourlyBudget });
-    if (weeklyFrequency) query.andWhere("job.weeklyFrequency = :weeklyFrequency", { weeklyFrequency });
-    if (workPeriod) query.andWhere("job.workPeriod = :workPeriod", { workPeriod });
-    if (startingDate) query.andWhere("job.startingDate >= :startingDate", { startingDate });
-    if (requiredGender) query.andWhere("job.requiredGender = :requiredGender", { requiredGender });
-    if (experience) query.andWhere("job.experience = :experience", { experience });
-    if (responsibility) query.andWhere("job.responsibility = :responsibility", { responsibility });
-    if (educationLevel) query.andWhere("job.educationLevel = :educationLevel", { educationLevel });
-    if (createdAfter) query.andWhere("job.createdAt >= :createdAfter", { createdAfter });
-    if (createdBefore) query.andWhere("job.createdAt <= :createdBefore", { createdBefore });
-    return query.getMany();
+    // console.log("STUDENTS: ", students);
+    if (students) {
+      query.andWhere("students.grade IN (:...students)", {
+        students: students.includes(",") ? students.split(",") : [students],
+      });
+    }
+
+    if (subjects) {
+      query.andWhere("subjects.name IN (:...subjects)", {
+        subjects: subjects.includes(",") ? subjects.split(",") : [subjects],
+      });
+    }
+
+    if (workPeriod)
+      query.andWhere("jobs.workPeriod = :workPeriod", { workPeriod });
+    if (startingDate)
+      query.andWhere("jobs.startingDate >= :startingDate", { startingDate });
+    if (requiredGender)
+      query.andWhere("jobs.requiredGender = :requiredGender", {
+        requiredGender,
+      });
+    if (experience)
+      query.andWhere("jobs.experience = :experience", { experience });
+    if (educationLevel)
+      query.andWhere("jobs.educationLevel = :educationLevel", {
+        educationLevel,
+      });
+    // console.log(query.getQuery());
+    // console.log(query.getParameters())
+    return await query.getMany();
   }
   static getRepo() {
     if (!JobRepository.jobRepo) {
