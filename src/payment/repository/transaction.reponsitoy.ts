@@ -1,11 +1,11 @@
-import { AppDataSource } from "../data.source";
+import { AppDataSource } from "../../database/data.source";
 import { Transaction } from "../entities/transaction.entity";
 import { TransactionInterface } from "../interfaces/transaction.interface";
 import { promises } from "dns";
 
 export class TransactionRepository {
-  static transactionRepo:TransactionRepository|null=null;
-  private constructor(){}
+  static transactionRepo: TransactionRepository | null = null;
+  private constructor() {}
   transactionRepository =
     AppDataSource.getRepository<TransactionInterface>(Transaction);
   async register(
@@ -14,11 +14,11 @@ export class TransactionRepository {
     return this.transactionRepository.save(transaction);
   }
   async find() {
-      return  await this.transactionRepository
-    .createQueryBuilder("transaction")
-    .leftJoinAndSelect("transaction.tutor", "tutor")
-    .leftJoinAndSelect("transaction.family", "families")
-    .getMany();
+    return await this.transactionRepository
+      .createQueryBuilder("transaction")
+      .leftJoinAndSelect("transaction.tutor", "tutor")
+      .leftJoinAndSelect("transaction.family", "families")
+      .getMany();
   }
   async findById(id: string) {
     return this.transactionRepository.findOneBy({ id: id });
@@ -33,13 +33,13 @@ export class TransactionRepository {
     );
     return this.transactionRepository.save(updated);
   }
-  async Delete(id:string){
-    return this.transactionRepository.delete({id})
+  async Delete(id: string) {
+    return this.transactionRepository.delete({ id });
   }
- static getRepo(){
-  if(!TransactionRepository.transactionRepo){
-    TransactionRepository.transactionRepo=new TransactionRepository();
+  static getRepo() {
+    if (!TransactionRepository.transactionRepo) {
+      TransactionRepository.transactionRepo = new TransactionRepository();
+    }
+    return TransactionRepository.transactionRepo;
   }
-  return TransactionRepository.transactionRepo;
- }
 }

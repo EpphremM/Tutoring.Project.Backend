@@ -11,7 +11,7 @@ import {
   JoinColumn,
 } from "typeorm";
 import { TutorInterface } from "../interfaces/tutor.interface";
-import { Transaction } from "./transaction.entity";
+import { Transaction } from "../../payment/entities/transaction.entity";
 import { Application } from "./application.entity";
 import { Experience } from "./experience.entity";
 import { Education } from "./education.entity";
@@ -44,7 +44,7 @@ export class Tutor implements TutorInterface {
   @Column()
   email: string;
   @Column()
-  password:string;
+  password: string;
 
   @Column()
   profile: string;
@@ -76,10 +76,10 @@ export class Tutor implements TutorInterface {
   @JoinColumn()
   experience: Experience[];
 
-  @OneToOne(() => Education, (education) => education.tutor, {cascade: true })
+  @OneToOne(() => Education, (education) => education.tutor, { cascade: true })
   @JoinColumn({ name: "education_id" })
-  education?:Education;
-  @Column({nullable:true})
+  education?: Education;
+  @Column({ nullable: true })
   education_id?: string;
 
   @ManyToMany(() => Job, (job) => job.tutor)

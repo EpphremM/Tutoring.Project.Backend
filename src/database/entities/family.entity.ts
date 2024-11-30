@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Transaction } from "./transaction.entity";
+import { Transaction } from "../../payment/entities/transaction.entity";
 import { FamilyInterface } from "../interfaces/family.interface";
 import { Tutor } from "./tutor.entity";
 import { Job } from "./job.entities";

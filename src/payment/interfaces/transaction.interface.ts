@@ -1,7 +1,5 @@
-import { Decimal128 } from "typeorm";
-import { FamilyInterface } from "./family.interface";
-import { Tutor } from "../entities/tutor.entity";
-import { Family } from "../entities/family.entity";
+import { Tutor } from "../../database/entities/tutor.entity";
+import { Family } from "../../database/entities/family.entity";
 
 export interface TransactionInterface{
     id:string;

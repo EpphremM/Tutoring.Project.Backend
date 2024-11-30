@@ -1,8 +1,5 @@
-import "reflect-metadata";
-import { nanoid } from "nanoid";
 import { TransactionInterface } from "../interfaces/transaction.interface";
 import {
-  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -11,11 +8,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Tutor } from "./tutor.entity";
-import { Family } from "./family.entity";
-import { nullable } from "zod";
-import { TutorInterface } from "../interfaces/tutor.interface";
-import { FamilyInterface } from "../interfaces/family.interface";
+import { Tutor } from "../../database/entities/tutor.entity";
+import { Family } from "../../database/entities/family.entity";
 @Entity("transaction")
 export class Transaction implements TransactionInterface {
   @PrimaryGeneratedColumn("uuid")
@@ -38,7 +32,7 @@ export class Transaction implements TransactionInterface {
   @Column({
     unique: true,
   })
-  @Generated('uuid')
+  @Generated("uuid")
   tx_ref: string;
   @Column()
   callbackUrl: string;
