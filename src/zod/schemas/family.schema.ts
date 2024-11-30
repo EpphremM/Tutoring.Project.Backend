@@ -1,7 +1,7 @@
 import z from 'zod'
 export const familySchema= z.object({
-    firstName:z.string().trim().max(20).min(1),
-    lastName:z.string().trim().max(20).min(1),
+    first_name:z.string().trim().max(20).min(1),
+    last_name:z.string().trim().max(20).min(1),
     email:z.string().email({message:"invalid email address"}),
     location:z.string(),
     phone:z.string().trim().min(9).max(13).refine((value)=>{
@@ -24,8 +24,8 @@ export const familySchema= z.object({
   
 }).required();
 export const familyUpdateSchema= z.object({
-  firstName:z.string().trim().max(20).min(1).optional(),
-  lastName:z.string().trim().max(20).min(1).optional(),
+  first_name:z.string().trim().max(20).min(1).optional(),
+  last_name:z.string().trim().max(20).min(1).optional(),
   email:z.string().email({message:"invalid email address"}).optional(),
   location:z.string().optional(),
   phone:z.string().trim().min(9).max(13).refine((value)=>{

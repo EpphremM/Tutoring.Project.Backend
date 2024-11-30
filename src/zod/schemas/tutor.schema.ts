@@ -1,8 +1,8 @@
 import z from "zod";
 export const tutorSchema = z
   .object({
-    firstName: z.string().trim().max(10).min(3),
-    lastName: z.string().trim().max(10).min(3),
+    first_name: z.string().trim().max(10).min(3),
+    last_name: z.string().trim().max(10).min(3),
     email: z.string().email({ message: "invalid email address" }),
     location: z.string(),
     phone: z
@@ -38,13 +38,13 @@ export const tutorSchema = z
     gender: z.string().max(4).trim(),
     profile: z.string(),
     occupation: z.string(),
-    educationLevel: z.string(),
+    education_level: z.string(),
   })
   .required();
   export const tutorUpdateSchema = z
     .object({
-      firstName: z.string().trim().max(10).min(3).optional(),
-      lastName: z.string().trim().max(10).min(3).optional(),
+      first_name: z.string().trim().max(10).min(3).optional(),
+      last_name: z.string().trim().max(10).min(3).optional(),
       email: z.string().email({ message: "invalid email address" }).optional(),
       location: z.string().optional(),
       phone: z
@@ -80,6 +80,6 @@ export const tutorSchema = z
       gender: z.string().max(4).trim().optional(),
       profile: z.string().optional(),
       occupation: z.string().optional(),
-      educationLevel: z.string().optional(),
+      education_level: z.string().optional(),
     }).nullable();
   

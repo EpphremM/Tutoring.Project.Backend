@@ -24,8 +24,8 @@ export class ExperienceRepository {
     const updated = this.experienceRepository.merge(experience, newExperience);
     return this.experienceRepository.save(updated);
   }
-  async findByWorkedAt(workedAt: string) {
-    return this.experienceRepository.findOne({ where: {workedAt} });
+  async findByWorkedAt(worked_at: string) {
+    return this.experienceRepository.findOne({ where: {worked_at} });
   }
   async Delete(id:string){
     return this.experienceRepository.delete({id});

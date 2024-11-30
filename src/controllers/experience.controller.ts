@@ -11,9 +11,7 @@ export const registration = async (
   next: NextFunction
 ) => {
   try {
-    const tutor_id = req.body;
     const body: ExperienceInterface = req.body;
-    const { workedAt }: ExperienceInterface = body;
     const validator = inputValidate(experienceSchema, body);
     console.log(body);
     console.log(validator);

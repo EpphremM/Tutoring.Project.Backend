@@ -1,39 +1,39 @@
 import z from "zod";
 export const experienceSchema = z
   .object({
-    workedAt: z.string(),
+    worked_at: z.string(),
     description: z.string().max(200).min(10),
-    statingDate: z
+    stating_date: z
       .string()
       .refine((date) => !isNaN(Date.parse(date)), {
         message: "invalid date format",
       }),
-    endingDate: z
+    ending_date: z
       .string()
       .refine((date) => !isNaN(Date.parse(date)), {
         message: "invalid date format",
       }),
   })
   .required()
-  .refine((date) => new Date(date.statingDate) <= new Date(date.endingDate), {
+  .refine((date) => new Date(date.stating_date) <= new Date(date.ending_date), {
     message: "starting date must be later or equal to ending date",
   });
   export const experienceUpdateSchema = z
     .object({
-      workedAt: z.string().optional(),
+      worked_at: z.string().optional(),
       description: z.string().max(200).min(10).optional(),
-      statingDate: z
+      stating_date: z
         .string()
         .refine((date) => !isNaN(Date.parse(date)), {
           message: "invalid date format",
         }).optional(),
-      endingDate: z
+      ending_date: z
         .string()
         .refine((date) => !isNaN(Date.parse(date)), {
           message: "invalid date format",
         }).optional(),
     })
-    .refine((date) => new Date(date.statingDate) <= new Date(date.endingDate), {
+    .refine((date) => new Date(date.stating_date) <= new Date(date.ending_date), {
       message: "starting date must be later or equal to ending date",
     });
   
