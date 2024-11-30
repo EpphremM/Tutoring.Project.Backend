@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "../express/error/app.error";
-import ENV from "../shared/dot_env/utility";
+import { AppError } from "../../express/error/app.error";
+import ENV from "../../shared/dot_env/utility";
 import axios from "axios";
-import { TransactionRepository } from "./repository/transaction.reponsitoy";
+import { TransactionRepository } from "../repository/transaction.reponsitoy";
 import { json } from "body-parser";
 
 export const deposit = async (

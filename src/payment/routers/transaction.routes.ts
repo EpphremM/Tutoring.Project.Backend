@@ -2,7 +2,7 @@ import { Router } from "express";
 import { Delete, findAll, update } from "../controller/transaction.controller";
 import { registration } from "../controller/transaction.controller";
 import { findById } from "../controller/transaction.controller";
-import { deposit } from "../deposit";
+import { deposit } from "../controller/deposit";
 export class TreansactionRoutes {
   public router: Router;
   constructor() {

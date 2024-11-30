@@ -8,6 +8,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { Status } from "../enum/status.enum";
 import { Tutor } from "../../database/entities/tutor.entity";
 import { Family } from "../../database/entities/family.entity";
 @Entity("transaction")
@@ -34,6 +35,8 @@ export class Transaction implements TransactionInterface {
   })
   @Generated("uuid")
   tx_ref: string;
+  @Column({enum:Status,type:"enum",default:"pending"})
+  status: Status;
   @Column()
   callback_url: string;
 

@@ -1,5 +1,5 @@
 
-export enum Geneder{
+export enum Gender{
     Male="Male",
     Female="Female"
 }

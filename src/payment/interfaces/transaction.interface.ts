@@ -14,6 +14,7 @@ export interface TransactionInterface{
     created_at:Date;
     family_id:string,
     tutor_id:string,
+    status:string;
     tutor:Tutor,
     family:Family
 }

@@ -17,7 +17,7 @@ import { Experience } from "./experience.entity";
 import { Education } from "./education.entity";
 import { Job } from "./job.entities";
 import { EducationLevel } from "../enum/education.enum";
-import { Geneder } from "../enum/gender.enum";
+import { Gender } from "../enum/gender.enum";
 @Entity("tutor")
 export class Tutor implements TutorInterface {
   @PrimaryGeneratedColumn("uuid")
@@ -31,9 +31,9 @@ export class Tutor implements TutorInterface {
 
   @Column({
     type: "enum",
-    enum: Geneder,
+    enum: Gender,
   })
-  gender: Geneder;
+  gender: Gender;
 
   @Column()
   location: string;
