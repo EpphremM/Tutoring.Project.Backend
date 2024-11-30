@@ -50,6 +50,8 @@ export class Job implements JobInterface {
   responsibility: string;
   @Column({ type: "enum", enum: EducationLevel })
   educationLevel: EducationLevel;
+  @Column({type:"tsvector",nullable:true,select:false})
+  tsVector:string;
   @CreateDateColumn()
   createdAt: Date;
   @ManyToOne(() => Family, (family) => family.jobs)

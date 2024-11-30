@@ -6,7 +6,7 @@ import { JobInterface } from "../interfaces/job.interface";
 import { TutorRepository } from "./tutor.repository";
 import { JobFilterDto } from "../../dto/filter.dto";
 import { title } from "process";
-import { PaginationDto } from '../../dto/pagination.dto';
+import { PaginationDto } from "../../dto/pagination.dto";
 import { OrderByDto } from "../../dto/orderBy.dto";
 
 export class JobRepository {
@@ -16,13 +16,12 @@ export class JobRepository {
   async register(job: JobInterface) {
     return await this.jobRpository.save(job);
   }
-  async find(paginationDto:PaginationDto) {
-    const {status}=new JobFilterDto();
-    const {page,limit}=paginationDto;
+  async find(paginationDto: PaginationDto) {
+    const { page, limit } = paginationDto;
     const parsedPage = Number(page) || 1;
     const parsedLimit = Number(limit) || 10;
     const skip = (parsedPage - 1) * parsedLimit;
-   const query= this.jobRpository
+    const query = this.jobRpository
       .createQueryBuilder("jobs")
       .leftJoinAndSelect("jobs.tutor", "tutor")
       .leftJoinAndSelect("jobs.family", "families")
@@ -31,14 +30,14 @@ export class JobRepository {
       .leftJoinAndSelect("students.subjects", "subjects")
       .skip(skip)
       .take(parsedLimit);
-      const [jobs,total]=await query.getManyAndCount();
-      const totalPages=(total/parsedPage);
-      return {
-        jobs,
-        limit:parsedLimit,
-        total,
-        totalPages
-      }
+    const [jobs, total] = await query.getManyAndCount();
+    const totalPages = total / parsedPage;
+    return {
+      jobs,
+      limit: parsedLimit,
+      total,
+      totalPages,
+    };
   }
   async findById(id: string) {
     return await this.jobRpository.findOne({ where: { id } });
@@ -50,16 +49,29 @@ export class JobRepository {
   async Delete(id: string) {
     return await this.jobRpository.delete({ id });
   }
-  async filterJob(Dto: JobFilterDto,paginationDto:PaginationDto,orderDto:OrderByDto) {
-    return await this.applyFilters(Dto,paginationDto,orderDto);
+  async filterJob(
+    Dto: JobFilterDto,
+    paginationDto: PaginationDto,
+    orderDto: OrderByDto
+  ) {
+    return await this.applyFilters(Dto, paginationDto, orderDto);
   }
-  private async applyFilters(filterDto: JobFilterDto,paginationDto:PaginationDto,orderDto:OrderByDto) {
-    const {page,limit}=paginationDto;
-    let {sortFields,sortDirection}=orderDto;
-    const sort =sortFields.includes(",")?sortFields.split(","):[sortFields]
-   const direction=sortDirection;
-   console.log("sort",sort);
-   console.log("dirction",direction);
+  private async applyFilters(
+    filterDto: JobFilterDto,
+    paginationDto: PaginationDto,
+    orderDto: OrderByDto
+  ) {
+    const { page, limit } = paginationDto;
+    console.log(paginationDto);
+    let { sortFields, sortDirection } = orderDto;
+    sortFields=sortFields??"createdAt"
+    sortDirection=sortDirection??"ASC";
+    const sort = typeof sortFields === 'string' && sortFields.includes(',')
+    ? sortFields.split(',').map((field) => field.trim())
+    : [sortFields];
+    const direction = sortDirection;
+    console.log(sort);
+    console.log(direction);
     const parsedPage = Number(page) || 1;
     const parsedLimit = Number(limit) || 10;
     const skip = (parsedPage - 1) * parsedLimit;
@@ -111,7 +123,7 @@ export class JobRepository {
         subjects: subjects.includes(",") ? subjects.split(",") : [subjects],
       });
     }
-   
+
     if (workPeriod)
       query.andWhere("jobs.workPeriod = :workPeriod", { workPeriod });
     if (startingDate)
@@ -127,20 +139,30 @@ export class JobRepository {
         educationLevel,
       });
     const orderByClauses = {};
-
-sort.forEach(field => {
-    orderByClauses[`jobs.${field}`] = direction;
-});
-query.orderBy(orderByClauses);
+    console.log(sort);
+    console.log(direction);
+    if (sort) {
+      sort.forEach((field) => {
+        orderByClauses[`jobs.${field}`] = direction;
+      });
+    }
+    console.log("dorder by id ",orderByClauses);
+    query.orderBy(orderByClauses);
     query.skip(skip).take(parsedLimit).orderBy(orderByClauses);
-    const [jobs,total]=await query.getManyAndCount();
-    const totalPages=Math.ceil((total/parsedPage));
-    return{
+    const [jobs, total] = await query.getManyAndCount();
+    const totalPages = Math.ceil(total / parsedPage);
+    return {
       jobs,
       total,
       parsedLimit,
-      totalPages
-    }
+      totalPages,
+    };
+  }
+  async search() {
+    return this.jobRpository
+      .createQueryBuilder("jobs")
+      .leftJoinAndSelect("students", "studebts")
+      .getMany();
   }
   static getRepo() {
     if (!JobRepository.jobRepo) {

@@ -214,6 +214,5 @@ export const filter = async (
     return next(
       new AppError("Error occured during filtering data", 400, "Operational")
     );
-    // next();
   }
 };
