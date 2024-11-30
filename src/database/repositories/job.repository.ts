@@ -8,6 +8,7 @@ import { JobFilterDto } from "../../dto/filter.dto";
 import { title } from "process";
 import { PaginationDto } from "../../dto/pagination.dto";
 import { OrderByDto } from "../../dto/orderBy.dto";
+import { searchDto } from "../../dto/search.dto";
 
 export class JobRepository {
   static jobRepo: JobRepository | null = null;
@@ -52,23 +53,26 @@ export class JobRepository {
   async filterJob(
     Dto: JobFilterDto,
     paginationDto: PaginationDto,
-    orderDto: OrderByDto
+    orderDto: OrderByDto,
+    searchDto: searchDto
   ) {
-    return await this.applyFilters(Dto, paginationDto, orderDto);
+    return await this.applyFilters(Dto, paginationDto, orderDto, searchDto);
   }
   private async applyFilters(
     filterDto: JobFilterDto,
     paginationDto: PaginationDto,
-    orderDto: OrderByDto
+    orderDto: OrderByDto,
+    searchDto: searchDto
   ) {
     const { page, limit } = paginationDto;
     console.log(paginationDto);
     let { sortFields, sortDirection } = orderDto;
-    sortFields=sortFields??"createdAt"
-    sortDirection=sortDirection??"ASC";
-    const sort = typeof sortFields === 'string' && sortFields.includes(',')
-    ? sortFields.split(',').map((field) => field.trim())
-    : [sortFields];
+    sortFields = sortFields ?? "created_at";
+    sortDirection = sortDirection ?? "ASC";
+    const sort =
+      typeof sortFields === "string" && sortFields.includes(",")
+        ? sortFields.split(",").map((field) => field.trim())
+        : [sortFields];
     const direction = sortDirection;
     console.log(sort);
     console.log(direction);
@@ -101,15 +105,15 @@ export class JobRepository {
     if (maxDuration)
       query.andWhere("jobs.duration <= :maxDuration", { maxDuration });
     if (minHourlyBudget)
-      query.andWhere("jobs.hourlyBudget >= :minHourlyBudget", {
+      query.andWhere("jobs.hourly_budget >= :minHourlyBudget", {
         minHourlyBudget,
       });
     if (maxHourlyBudget)
-      query.andWhere("jobs.hourlyBudget <= :maxHourlyBudget", {
+      query.andWhere("jobs.hourly_budget <= :maxHourlyBudget", {
         maxHourlyBudget,
       });
     if (weeklyFrequency)
-      query.andWhere("jobs.weeklyFrequency = :weeklyFrequency", {
+      query.andWhere("jobs.weekly_frequency = :weeklyFrequency", {
         weeklyFrequency,
       });
     if (students) {
@@ -125,17 +129,17 @@ export class JobRepository {
     }
 
     if (workPeriod)
-      query.andWhere("jobs.workPeriod = :workPeriod", { workPeriod });
+      query.andWhere("jobs.work_period = :workPeriod", { workPeriod });
     if (startingDate)
-      query.andWhere("jobs.startingDate >= :startingDate", { startingDate });
+      query.andWhere("jobs.starting_date >= :startingDate", { startingDate });
     if (requiredGender)
-      query.andWhere("jobs.requiredGender = :requiredGender", {
+      query.andWhere("jobs.required_gender = :requiredGender", {
         requiredGender,
       });
     if (experience)
       query.andWhere("jobs.experience = :experience", { experience });
     if (educationLevel)
-      query.andWhere("jobs.educationLevel = :educationLevel", {
+      query.andWhere("jobs.education_level = :educationLevel", {
         educationLevel,
       });
     const orderByClauses = {};
@@ -146,7 +150,20 @@ export class JobRepository {
         orderByClauses[`jobs.${field}`] = direction;
       });
     }
-    console.log("dorder by id ",orderByClauses);
+    const { searchData } = searchDto;
+    if (searchData) {
+      const tsQuery = searchData.replace(/\s+/g, "&");
+      query
+        .andWhere(`jobs.tsvector @@ to_tsquery('english', :tsQuery)`, {
+          tsQuery,
+        })
+        .addSelect(
+          `ts_rank(jobs.tsvector, to_tsquery('english', :tsQuery))`,
+          "rank"
+        )
+        .orderBy("rank", "DESC");
+    }
+    console.log("dorder by id ", orderByClauses);
     query.orderBy(orderByClauses);
     query.skip(skip).take(parsedLimit).orderBy(orderByClauses);
     const [jobs, total] = await query.getManyAndCount();

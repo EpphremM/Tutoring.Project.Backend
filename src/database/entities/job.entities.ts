@@ -32,28 +32,28 @@ export class Job implements JobInterface {
   @Column()
   duration: number;
   @Column()
-  hourlyBudget: number;
+  hourly_budget: number;
   @Column({
     type: "enum",
     enum: JobGender,
   })
-  requiredGender: JobGender;
+  required_gender: JobGender;
   @Column()
-  weeklyFrequency: number;
+  weekly_frequency: number;
   @Column()
-  workPeriod: String;
+  work_period: String;
   @Column()
-  startingDate: Date;
+  starting_date: Date;
   @Column({ type: "enum", enum: ExperienceLevel })
   experience: ExperienceLevel;
   @Column()
   responsibility: string;
-  @Column({ type: "enum", enum: EducationLevel })
-  educationLevel: EducationLevel;
-  @Column({type:"tsvector",nullable:true,select:false})
-  tsVector:string;
+  @Column({ type: "enum", enum: EducationLevel,nullable:true })
+  education_level: EducationLevel;
+  @Column({ type: "tsvector", nullable: true, select: false })
+  tsvector: string;
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
   @ManyToOne(() => Family, (family) => family.jobs)
   @JoinColumn({ name: "family_id" })
   family: Family;
@@ -61,8 +61,8 @@ export class Job implements JobInterface {
   family_id: string;
   @OneToMany(() => Application, (application) => application.job)
   applications: Application[];
-  @OneToMany(()=>Student,(student)=>student.Job)
-  students:Student[]
+  @OneToMany(() => Student, (student) => student.Job)
+  students: Student[];
   @ManyToMany(() => Tutor, (tutor) => tutor.job)
   @JoinTable({ name: "tutor_job" })
   tutor: Tutor[];

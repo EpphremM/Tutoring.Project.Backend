@@ -5,13 +5,13 @@ export interface JobInterface {
   title: string;
   status: string;
   duration: number;
-  hourlyBudget: number;
-  weeklyFrequency: number;
-  workPeriod: String;
-  startingDate: Date;
-  requiredGender: string;
+  hourly_budget: number;
+  weekly_frequency: number;
+  work_period: String;
+  starting_date: Date;
+  required_gender: string;
   experience: string;
   responsibility: string;
-  educationLevel: string;
-  createdAt: Date;
+  education_level: string;
+  created_at: Date;
 }

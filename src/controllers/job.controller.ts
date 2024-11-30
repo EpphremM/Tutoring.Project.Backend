@@ -9,6 +9,7 @@ import { JobFilterDto } from "../dto/filter.dto";
 import { JobService } from "../services/pagination.service";
 import { PaginationDto } from "../dto/pagination.dto";
 import { OrderByDto } from "../dto/orderBy.dto";
+import { searchDto } from "../dto/search.dto";
 export const registration = async (
   req: Request,
   res: Response,
@@ -41,6 +42,7 @@ export const registration = async (
     res.status(201).json({ responseBody });
     return;
   } catch (error) {
+    console.log(error);
     next(
       new AppError(
         "error occured during creating job",
@@ -193,11 +195,13 @@ export const filter = async (
     const fileterDto: JobFilterDto = req.query as unknown as JobFilterDto;
     const paginationDto: PaginationDto = req.query as unknown as PaginationDto;
     const sortDto: OrderByDto = req.query as unknown as OrderByDto;
+    const searchDto:searchDto=req.query as unknown as searchDto;
     console.log("DTO", fileterDto);
     const result = await JobRepository.getRepo().filterJob(
       fileterDto,
       paginationDto,
-      sortDto
+      sortDto,
+      searchDto
     );
     if (!result) {
       next(new AppError("Can not found filtered data", 400, "Operaional"));
