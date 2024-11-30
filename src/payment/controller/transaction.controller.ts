@@ -210,3 +210,23 @@ export const Delete = async (
     next(new AppError("Error occured during transaction", 400, "Operational"));
   }
 };
+export const updateStatus=async(tx_ref:string,newStatus:string)=>{
+  try{
+   const transaction=await TransactionRepository.getRepo().findByTx_ref(tx_ref);
+   if(!transaction){
+    throw new Error("Transaction not found")
+    return null;
+   }
+   transaction.status=newStatus;
+   const newTransaction=await TransactionRepository.getRepo().updateStatus(transaction);
+   if(!newTransaction){
+    console.log("Transaction status not updated");
+   }
+   console.log("Transaction status updated successfully");
+   return newTransaction;
+  }catch(error){
+    console.log("Error occured during updating a transaction",error)
+    return null;
+  }
+
+}

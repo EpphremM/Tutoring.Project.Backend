@@ -1,5 +1,6 @@
 import { AppDataSource } from "../../database/data.source";
 import { Transaction } from "../entities/transaction.entity";
+import { Status } from "../enum/status.enum";
 import { TransactionInterface } from "../interfaces/transaction.interface";
 import { promises } from "dns";
 
@@ -23,6 +24,9 @@ export class TransactionRepository {
   async findById(id: string) {
     return this.transactionRepository.findOneBy({ id: id });
   }
+  async findByTx_ref(tx_ref:string){
+    return this.transactionRepository.findOneBy({tx_ref:tx_ref})
+  }
   async update(
     transaction: TransactionInterface,
     newTransaction: Partial<TransactionInterface>
@@ -38,6 +42,9 @@ export class TransactionRepository {
   }
   async Registration(transaction){
    return this.transactionRepository.save(transaction);
+  }
+  async updateStatus(transaction:TransactionInterface){
+  return this.transactionRepository.save(transaction);
   }
   static getRepo() {
     if (!TransactionRepository.transactionRepo) {

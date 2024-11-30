@@ -3,15 +3,28 @@ import { AppError } from "../../express/error/app.error";
 import ENV from "../../shared/dot_env/utility";
 import axios from "axios";
 import { TransactionRepository } from "../repository/transaction.reponsitoy";
-import { json } from "body-parser";
-
+import { TransactionInterface } from "../interfaces/transaction.interface";
+import { inputValidate } from "../../zod/middlewares/zod.validation";
+import { transactionSchema } from "../../zod/schemas/transaction.schema";
+import { ResponseBody } from "../../express/types/response.body";
 export const deposit = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const result = await TransactionRepository.getRepo().Registration(req.body);
+    const body: TransactionInterface = req.body;
+    const validation = inputValidate(transactionSchema, body);
+    if (!validation.status) {
+      console.log(validation.errors);
+      next(new AppError("Validation error", 400, "Operational"));
+      return;
+    }
+    const result = await TransactionRepository.getRepo().Registration(body);
+    if (!result) {
+      next(new AppError("Could not register transaction", 400, "Operational"));
+      return;
+    }
     const { email, first_name, last_name, phone_number, tx_ref } = result;
 
     const amount = result.amount.toString();
@@ -41,8 +54,12 @@ export const deposit = async (
       next(new AppError("Transaction failed", 400, "Operational"));
       return;
     }
-
-    res.status(200).json(response.data);
+    const responseBody: ResponseBody<TransactionInterface> = {
+      status: "success",
+      message: "Please pay using the link below",
+      data: { payload: response.data },
+    };
+    res.status(200).json(responseBody);
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       console.error("Axios error:", error.response?.data || error.message);
