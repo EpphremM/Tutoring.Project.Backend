@@ -3,15 +3,15 @@ import { Family } from "../../database/entities/family.entity";
 
 export interface TransactionInterface{
     id:string;
-    firstName:string;
-    lastName:string;
-    phoneNumber:string;
+    first_name:string;
+    last_name:string;
+    phone_number:string;
     email:string;
     amount:Number;
-    callbackUrl:string;
+    callback_url:string;
     tx_ref:string;
-    returnUrl:string;
-    createdAt:Date;
+    return_url:string;
+    created_at:Date;
     family_id:string,
     tutor_id:string,
     tutor:Tutor,

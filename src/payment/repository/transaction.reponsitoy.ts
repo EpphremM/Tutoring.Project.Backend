@@ -36,6 +36,9 @@ export class TransactionRepository {
   async Delete(id: string) {
     return this.transactionRepository.delete({ id });
   }
+  async Registration(transaction){
+   return this.transactionRepository.save(transaction);
+  }
   static getRepo() {
     if (!TransactionRepository.transactionRepo) {
       TransactionRepository.transactionRepo = new TransactionRepository();

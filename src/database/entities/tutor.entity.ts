@@ -18,9 +18,6 @@ import { Education } from "./education.entity";
 import { Job } from "./job.entities";
 import { EducationLevel } from "../enum/education.enum";
 import { Geneder } from "../enum/gender.enum";
-import { Student } from "./student.entity";
-import { nullable } from "zod";
-
 @Entity("tutor")
 export class Tutor implements TutorInterface {
   @PrimaryGeneratedColumn("uuid")

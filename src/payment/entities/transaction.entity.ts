@@ -15,13 +15,13 @@ export class Transaction implements TransactionInterface {
   @PrimaryGeneratedColumn("uuid")
   id: string;
   @Column()
-  firstName: string;
+  first_name: string;
 
   @Column()
-  lastName: string;
+  last_name: string;
 
   @Column()
-  phoneNumber: string;
+  phone_number: string;
 
   @Column()
   email: string;
@@ -35,13 +35,13 @@ export class Transaction implements TransactionInterface {
   @Generated("uuid")
   tx_ref: string;
   @Column()
-  callbackUrl: string;
+  callback_url: string;
 
   @Column()
-  returnUrl: string;
+  return_url: string;
 
   @CreateDateColumn({ name: "created_at", update: false })
-  createdAt: Date;
+  created_at: Date;
   @ManyToOne(() => Tutor, (tutor) => tutor.transactions, { cascade: true })
   @JoinColumn({ name: "tutor_id" })
   tutor: Tutor;

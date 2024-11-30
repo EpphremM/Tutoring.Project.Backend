@@ -1,6 +1,8 @@
 import "reflect-metadata";
 import { DataSource, Entity } from "typeorm";
 import ENV from "../shared/dot_env/utility";
+import { Transaction } from "../payment/entities/transaction.entity";
+Transaction
 export const AppDataSource: DataSource = new DataSource({
   type: "postgres",
   host: "localhost",
@@ -8,9 +10,8 @@ export const AppDataSource: DataSource = new DataSource({
   port: parseInt(ENV.db_port || "5432"),
   database: ENV.db_name,
   password: ENV.db_password,
-  entities: [__dirname + "/entities/**/*.ts"],
+  entities: [__dirname + "/entities/**/*.ts",__dirname+"/../payment/entities/**/*.ts"],
   migrations: [__dirname + "/migration/**/*.ts"],
-  // entities: [__dirname + '/entities/**/*.ts'],
   synchronize: true,
 });
 const intializeConnection = () => {

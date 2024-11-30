@@ -5,7 +5,7 @@ import { FamilyRoutes } from "./src/routes/family.routes";
 import { globalErrorHandler } from "./src/controllers/global.error.controller";
 import { TutorRoutes } from "./src/routes/tutor.routes";
 import { Jobroutes } from "./src/routes/job.routes";
-import { TreansactionRoutes } from "./src/routes/transaction.routes";
+import { TreansactionRoutes } from "./src/payment/routers/transaction.routes";
 import { ApplicationRoutes } from "./src/routes/application.routes";
 import { SubjectRoutes } from "./src/routes/subject.routes";
 import { StudentRoutes } from "./src/routes/student.routes";
