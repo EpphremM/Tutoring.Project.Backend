@@ -17,10 +17,10 @@ export class Family implements FamilyInterface {
   id: string;
 
   @Column()
-  firstName!: string;
+  first_name!: string;
 
   @Column()
-  lastName!: string;
+  last_name!: string;
 
   @Column()
   location: string;
@@ -35,7 +35,7 @@ export class Family implements FamilyInterface {
   password: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
   @OneToMany(() => Job, (job) => job.family)
   jobs: Job[];
   @OneToMany(() => Transaction, (transaction) => transaction.family)

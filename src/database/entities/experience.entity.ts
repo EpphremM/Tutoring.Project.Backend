@@ -7,15 +7,15 @@ export class Experience implements ExperienceInterface{
     @PrimaryGeneratedColumn('uuid')
     id: string;
     @Column()
-    workedAt: string;
+    worked_at: string;
     @Column()
     description: string;
     @Column()
-    statingDate: Date;
+    stating_date: Date;
     @Column()
-    endingDate: Date;
+    ending_date: Date;
     @CreateDateColumn()
-    createdAt: Date;
+    created_at: Date;
     @ManyToOne(()=>Tutor,(tutor)=>tutor.experience,{cascade:true})
     @JoinColumn({name:"tutor_id"})
     tutor:Tutor

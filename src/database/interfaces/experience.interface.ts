@@ -1,8 +1,8 @@
 export interface ExperienceInterface{
 id:string
-workedAt:string,
+worked_at:string,
 description:string,
-statingDate:Date,
-endingDate:Date,
-createdAt:Date
+stating_date:Date,
+ending_date:Date,
+created_at:Date
 }

@@ -2,8 +2,8 @@ import { Timestamp } from "typeorm";
 import { JobInterface } from "./job.interface";
 export interface TutorInterface {
   id: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   gender: string;
   password: string;
   profile: string;
@@ -11,7 +11,7 @@ export interface TutorInterface {
   email: string;
   phone: string;
   occupation: string;
-  educationLevel: string;
-  createdAt: Date;
+  education_level: string;
+  created_at: Date;
   job?: JobInterface[];
 }

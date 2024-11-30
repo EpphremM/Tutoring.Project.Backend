@@ -5,7 +5,6 @@ import {
   Column,
   CreateDateColumn,
   ManyToMany,
-  JoinTable,
 } from "typeorm";
 import { Student } from "./student.entity";
 @Entity("subjects")
@@ -15,7 +14,7 @@ export class Subject implements SubjectInterface {
   @Column({ default: "All" })
   name: string;
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
   @ManyToMany(() => Student, (student) => student.subjects)
   students: Student[];
 }

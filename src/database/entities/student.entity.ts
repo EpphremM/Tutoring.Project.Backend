@@ -19,7 +19,7 @@ export class Student implements StudentInterface {
   @Column()
   grade: string;
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
   @ManyToMany(() => Subject, (subject) => subject.students, { cascade: true })
   @JoinTable({
     name: "student_subject",

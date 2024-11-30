@@ -1,10 +1,10 @@
 export interface FamilyInterface {
   id: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   location: string;
   email: string;
   phone: string;
   password: string;
-  createdAt: Date;
+  created_at: Date;
 }

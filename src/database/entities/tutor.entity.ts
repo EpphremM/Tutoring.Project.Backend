@@ -24,10 +24,10 @@ export class Tutor implements TutorInterface {
   id: string;
 
   @Column()
-  firstName: string;
+  first_name: string;
 
   @Column()
-  lastName: string;
+  last_name: string;
 
   @Column({
     type: "enum",
@@ -56,10 +56,10 @@ export class Tutor implements TutorInterface {
     type: "enum",
     enum: EducationLevel,
   })
-  educationLevel: EducationLevel;
+  education_level: EducationLevel;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @OneToMany(() => Transaction, (transaction) => transaction.tutor)
   @JoinColumn()
