@@ -7,6 +7,7 @@ import { ResponseBody } from "../express/types/response.body";
 import { AppError } from "../express/error/app.error";
 import { error } from "console";
 import { Family } from "../database/entities/family.entity";
+import { isEmpty } from "class-validator";
 export const registration = async (
   req: Request,
   res: Response,
@@ -25,9 +26,11 @@ export const registration = async (
     return;
   }
   const family = await FamilyRepository.getRepo().findByEmail(email);
+  console.log("registerd family",family);
   console.log(family);
-  if (family) {
-    next(new AppError("family is already registered",400,"operational"))
+  if (family.length!==0) {
+    next(new AppError("family is already registered", 400, "operational"));
+    return;
   }
   const result = await FamilyRepository.getRepo().register(body);
   const responseBody: ResponseBody<FamilyInterface> = {
@@ -57,7 +60,7 @@ export const findAll = async (
     res.status(200).json({ status: "success", data: { payload: results } });
     return;
   } catch (error) {
-    next(new AppError("error occured", 400, "operational",error));
+    next(new AppError("error occured", 400, "operational", error));
   }
 };
 
@@ -68,14 +71,16 @@ export const findById = async (
 ) => {
   try {
     const { id } = req.params;
-    const result:FamilyInterface = await FamilyRepository.getRepo().findById(id);
+    const result: FamilyInterface = await FamilyRepository.getRepo().findById(
+      id
+    );
     if (!result) {
-      next(new AppError("data not found",400,"operational"))
+      next(new AppError("data not found", 400, "operational"));
     }
     res.status(200).json({ status: "success", data: { payload: result } });
     return;
   } catch (error) {
-    next(new AppError("error occured", 400, "operational",error));
+    next(new AppError("error occured", 400, "operational", error));
   }
 };
 export const update = async (
@@ -116,24 +121,30 @@ export const update = async (
     res.status(200).json({ status: "success", data: { payload: result } });
     return;
   } catch (error) {
-    next(new AppError("error occured", 400, "operational",error));
+    next(new AppError("error occured", 400, "operational", error));
   }
 };
-export const Delete=async(req:Request,res:Response,next:NextFunction)=>{
-  try{
-     const {id}=req.params;
-     const application=await FamilyRepository.getRepo().findById(id);
-     if(!application){
-      next(new AppError("Family to found",404,"Operational"));
-     }
-     const result= await FamilyRepository.getRepo().Delete(id);
-     if(!result){
-      next(new AppError("Family not deleted",400,"Operational"));
-     }
-     const responseBody={status:"success",message:"Family deleted successfully"};
-     res.status(200).json(responseBody);
-
-  }catch(error){
-    next(new AppError("Error occured during family",400,"Operational"))
+export const Delete = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const application = await FamilyRepository.getRepo().findById(id);
+    if (!application) {
+      next(new AppError("Family to found", 404, "Operational"));
+    }
+    const result = await FamilyRepository.getRepo().Delete(id);
+    if (!result) {
+      next(new AppError("Family not deleted", 400, "Operational"));
+    }
+    const responseBody = {
+      status: "success",
+      message: "Family deleted successfully",
+    };
+    res.status(200).json(responseBody);
+  } catch (error) {
+    next(new AppError("Error occured during family", 400, "Operational"));
   }
-}
+};

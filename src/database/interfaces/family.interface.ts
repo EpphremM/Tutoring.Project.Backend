@@ -6,5 +6,6 @@ export interface FamilyInterface {
   email: string;
   phone: string;
   password: string;
+  credit:number;
   created_at: Date;
 }

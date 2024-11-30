@@ -33,7 +33,8 @@ export class Family implements FamilyInterface {
 
   @Column()
   password: string;
-
+  @Column({default:0})
+  credit:number;
   @CreateDateColumn()
   created_at: Date;
   @OneToMany(() => Job, (job) => job.family)
