@@ -211,3 +211,24 @@ export const Delete=async(req:Request,res:Response,next:NextFunction)=>{
     next(new AppError("Error occured during tutor",400,"Operational"))
   }
 }
+
+export const updateTutorCredit=async(id:string,amount:string)=>{
+  try{
+    const tutor=await TutorRepository.getRepo().findOneById(id)
+    if(!tutor){
+      console.log("Tutor not found");
+      return null;
+    }
+    const credit = Math.ceil(parseInt(amount) / 20);
+  tutor.credit+=credit;
+  const newTutor=await TutorRepository.getRepo().updateCredit(tutor);
+  if(!newTutor){
+    console.log("Tutor credit is not updated");
+    return null;
+  }
+  return newTutor;
+  }catch(error){
+    console.log("Error occured during updating tutor's credit")
+    throw error;
+  }
+}

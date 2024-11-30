@@ -221,6 +221,7 @@ export const updateStatus=async(tx_ref:string,newStatus:string)=>{
    const newTransaction=await TransactionRepository.getRepo().updateStatus(transaction);
    if(!newTransaction){
     console.log("Transaction status not updated");
+    return null;
    }
    console.log("Transaction status updated successfully");
    return newTransaction;
@@ -229,4 +230,19 @@ export const updateStatus=async(tx_ref:string,newStatus:string)=>{
     return null;
   }
 
+}
+export const findOwner=async(tx_ref:string)=>{
+  try{
+ const transaction=await TransactionRepository.getRepo().findByTx_ref(tx_ref);
+ if(!transaction){
+  console.log("Transaction not found")
+  return null;
+ }
+ const ownerId=transaction.family_id||transaction.tutor_id;
+ const ownerType=transaction.family_id?"family":"tutor";
+ return {ownerType,ownerId};
+  }catch(error){
+   console.error("Error occured during finding owener id",error)
+    throw error;
+  }
 }

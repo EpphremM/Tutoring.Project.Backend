@@ -3,10 +3,7 @@ import { Family } from "../../database/entities/family.entity";
 
 export interface TransactionInterface{
     id:string;
-    first_name:string;
-    last_name:string;
     phone_number:string;
-    email:string;
     amount:Number;
     callback_url:string;
     tx_ref:string;

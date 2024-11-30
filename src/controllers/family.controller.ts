@@ -26,9 +26,9 @@ export const registration = async (
     return;
   }
   const family = await FamilyRepository.getRepo().findByEmail(email);
-  console.log("registerd family",family);
+  console.log("registerd family", family);
   console.log(family);
-  if (family.length!==0) {
+  if (family.length !== 0) {
     next(new AppError("family is already registered", 400, "operational"));
     return;
   }
@@ -146,5 +146,25 @@ export const Delete = async (
     res.status(200).json(responseBody);
   } catch (error) {
     next(new AppError("Error occured during family", 400, "Operational"));
+  }
+};
+export const updateFamilyCredit = async (id: string, amount: string) => {
+  try {
+    const family = await FamilyRepository.getRepo().findById(id);
+    if (!family) {
+      console.log("Family not found");
+      return null;
+    }
+    const credit = Math.ceil(parseInt(amount) / 30);
+    family.credit += credit;
+    const newFamily = await FamilyRepository.getRepo().updateCredit(family);
+    if (!newFamily) {
+      console.log("Family credit is not updated");
+      return null;
+    }
+    return newFamily;
+  } catch (error) {
+    console.log("Error occured during updating familie's credit");
+    throw error;
   }
 };

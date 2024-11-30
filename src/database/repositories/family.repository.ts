@@ -42,6 +42,9 @@ export class FamilyRepository {
   async Delete(id:string){
     return await this.familyRepository.delete(id)
   }
+  async updateCredit(family:FamilyInterface){
+    return this.familyRepository.save(family);
+  }
   static getRepo() {
     if (!FamilyRepository.familyRepo) {
       FamilyRepository.familyRepo = new FamilyRepository();

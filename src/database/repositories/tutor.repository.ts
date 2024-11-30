@@ -40,6 +40,9 @@ export class TutorRepository {
   async Delete(id:string){
     return await this.tutorRepository.delete({id})
   }
+  async updateCredit(tutor:TutorInterface){
+    return await this.tutorRepository.save(tutor);
+  }
   static getRepo() {
     if (!TutorRepository.TutorRepo) {
       TutorRepository.TutorRepo = new TutorRepository();

@@ -16,17 +16,7 @@ export class Transaction implements TransactionInterface {
   @PrimaryGeneratedColumn("uuid")
   id: string;
   @Column()
-  first_name: string;
-
-  @Column()
-  last_name: string;
-
-  @Column()
   phone_number: string;
-
-  @Column()
-  email: string;
-
   @Column()
   amount: Number;
 
@@ -37,10 +27,10 @@ export class Transaction implements TransactionInterface {
   tx_ref: string;
   @Column({enum:Status,type:"enum",default:"pending"})
   status: Status;
-  @Column()
+  @Column({nullable:true})
   callback_url: string;
 
-  @Column()
+  @Column({nullable:true})
   return_url: string;
 
   @CreateDateColumn({ name: "created_at", update: false })
