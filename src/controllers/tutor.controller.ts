@@ -7,6 +7,8 @@ import { ResponseBody } from "../express/types/response.body";
 import { AppError } from "../express/error/app.error";
 import { JobRepository } from "../database/repositories/job.repository";
 import { FamilyRepository } from "../database/repositories/family.repository";
+import { ApplicationInterface } from "../database/interfaces/application.interface";
+import { ApplicationRepository } from "../database/repositories/application.repository";
 export const registration = async (
   req: Request,
   res: Response,
@@ -150,49 +152,55 @@ export const update = async (
     next(new AppError("error occured", 400, "operational",error));
   }
 };
-
 export const applyJob = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
- try{
-  type ApplyReq = {
-    tutor_id: string;
-    job_id: string;
-  };
+  try {
+    const body: ApplicationInterface = req.body;
+    const { tutor_id, job_id } = body;
 
-  const body = req.body as ApplyReq;
+    if (!tutor_id || !job_id) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Tutor ID and Job ID are required.",
+      });
+    }
+    const [tutor, job] = await Promise.all([
+      TutorRepository.getRepo().findOneById(tutor_id),
+      JobRepository.getRepo().findById(job_id),
+    ]);
 
-  if (!req.body.tutor_id || !req.body.job_id) {
-    res.status(404).json({
-      status:"fail",
-      message:"The job or tutor id is not found not found"
-    })
-    return;
+    if (!tutor) return next(new AppError("Tutor not found", 404, "Operational"));
+    if (!job) return next(new AppError("Job not found", 404, "Operational"));
+    if (tutor.credit < 1) {
+      return next(new AppError("Insufficient balance. Please recharge your account.", 400, "Operational"));
+    }
+    const payment = await updateTutorCredit(tutor_id, "1", "spend");
+    if (!payment) {
+      return next(new AppError("Failed to process application fee.", 400, "Operational"));
+    }
+    const [newTutor, application] = await Promise.all([
+      TutorRepository.getRepo().apply(tutor, job),
+      ApplicationRepository.getRepo().registration(body),
+    ]);
+
+    if (!newTutor || !application) {
+      return next(new AppError("Application submission failed.", 400, "Operational"));
+    }
+
+    const responseBody: ResponseBody<ApplicationInterface> = {
+      status: "success",
+      message: "Tutor applied successfully.",
+      data: { payload: application },
+    };
+    res.status(200).json(responseBody);
+  } catch (error) {
+    next(new AppError("An error occurred while processing your request.", 500, "Operational", error));
   }
-  const tutor = await TutorRepository.getRepo().findOneById(body.tutor_id);
-  const job = await JobRepository.getRepo().findById(body.job_id);
-if(!tutor){
-  res.status(404).json({
-    status:"fail",
-    message:"tutor not found"
-  })
-}
-if(!job){
-  res.status(404).json({
-    status:"fail",
-    message:"job not found"
-  })
-}
-  const newTutor: TutorInterface = await TutorRepository.getRepo().apply(tutor,job);
-const responseBody:ResponseBody<TutorInterface>={status:"success",message:"tutor applied successfully",data:{payload:newTutor}};
- res.status(200).json(responseBody);
-  return;
- }catch(error){
-  next(new AppError("error occured",404,"operational",error))
- }
 };
+
 export const Delete=async(req:Request,res:Response,next:NextFunction)=>{
   try{
      const {id}=req.params;
@@ -212,15 +220,20 @@ export const Delete=async(req:Request,res:Response,next:NextFunction)=>{
   }
 }
 
-export const updateTutorCredit=async(id:string,amount:string)=>{
+export const updateTutorCredit=async(id:string,amount:string,operation)=>{
   try{
+    
     const tutor=await TutorRepository.getRepo().findOneById(id)
     if(!tutor){
       console.log("Tutor not found");
       return null;
     }
-    const credit = Math.ceil(parseInt(amount) / 20);
-  tutor.credit+=credit;
+    if(operation==="topup"){
+      const credit = Math.ceil(parseInt(amount) / 20);
+    tutor.credit+=credit;
+    }else if(operation==="spend"){
+      tutor.credit-=1;
+    }
   const newTutor=await TutorRepository.getRepo().updateCredit(tutor);
   if(!newTutor){
     console.log("Tutor credit is not updated");

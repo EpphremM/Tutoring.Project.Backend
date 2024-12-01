@@ -10,6 +10,8 @@ import { JobService } from "../services/pagination.service";
 import { PaginationDto } from "../dto/pagination.dto";
 import { OrderByDto } from "../dto/orderBy.dto";
 import { searchDto } from "../dto/search.dto";
+import { FamilyRepository } from "../database/repositories/family.repository";
+import { updateFamilyCredit } from "./family.controller";
 export const registration = async (
   req: Request,
   res: Response,
@@ -17,6 +19,16 @@ export const registration = async (
 ) => {
   try {
     const body: JobInterface = req.body;
+    const {family_id}=body;
+  const family=await FamilyRepository.getRepo().findById(family_id);
+  if(!family){
+    next(new AppError("Family is not registered",400,"Operational"));
+    return;
+  }
+  if(family.credit<1){
+    next(new AppError("Inssuficient Balance please recharge your account ",400,"Operational"));
+    return;
+  }
     const validator = await inputValidate(jobSchema, body);
     console.log(validator);
     if (!validator.status) {
@@ -34,6 +46,11 @@ export const registration = async (
       });
       return;
     }
+   const payment = await updateFamilyCredit(family_id, "1","spend");
+          if (!payment) {
+           next(new AppError("Family credit not updated", 400, "Operational"));
+           return;
+          }
     const responseBody: ResponseBody<JobInterface> = {
       status: "success",
       message: "job created successfully",

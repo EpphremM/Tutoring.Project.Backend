@@ -12,7 +12,7 @@ export interface TutorInterface {
   phone: string;
   occupation: string;
   education_level: string;
-  credit: string;
+  credit: number;
   created_at: Date;
   job?: JobInterface[];
 }

@@ -14,4 +14,5 @@ export interface JobInterface {
   responsibility: string;
   education_level: string;
   created_at: Date;
+  family_id:string;
 }

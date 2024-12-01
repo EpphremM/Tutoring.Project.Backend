@@ -8,7 +8,7 @@ export class ApplicationRoutes{
         this.setRouter();
     }
     setRouter(){
-        this.router.route("/").post(registration).get(findAll);
+        this.router.route("/").get(findAll);
         this.router.route("/:id").get(findById).patch(update).delete(Delete);
     }
 }

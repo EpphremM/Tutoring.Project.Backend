@@ -148,12 +148,18 @@ export const Delete = async (
     next(new AppError("Error occured during family", 400, "Operational"));
   }
 };
-export const updateFamilyCredit = async (id: string, amount: string) => {
+export const updateFamilyCredit = async (id: string, amount:string,operation:string) => {
   try {
     const family = await FamilyRepository.getRepo().findById(id);
     if (!family) {
       console.log("Family not found");
       return null;
+    }
+    if(operation==="topup"){
+      const credit = Math.ceil(parseInt(amount) / 20);
+    family.credit+=credit;
+    }else if(operation==="spend"){
+      family.credit-=1;
     }
     const credit = Math.ceil(parseInt(amount) / 30);
     family.credit += credit;

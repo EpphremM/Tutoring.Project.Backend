@@ -37,7 +37,7 @@ export const verifyWebhook = async (req: Request, res: Response, next: NextFunct
           if (!family) {
             return next(new AppError("Family not found", 400, "Operation"));
           }
-          result = await updateFamilyCredit(ownerId, amount);
+          result = await updateFamilyCredit(ownerId, amount,"topup");
           if (!result) {
             return next(new AppError("Family credit not updated", 400, "Operational"));
           }
@@ -49,7 +49,7 @@ export const verifyWebhook = async (req: Request, res: Response, next: NextFunct
           if (!tutor) {
             return next(new AppError("Tutor not found", 400, "Operation"));
           }
-          result = await updateTutorCredit(ownerId, amount);
+          result = await updateTutorCredit(ownerId, amount,"topup");
           if (!result) {
             return next(new AppError("Tutor credit not updated", 400, "Operational"));
           }

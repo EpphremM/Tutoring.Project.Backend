@@ -58,7 +58,7 @@ export class Tutor implements TutorInterface {
   })
   education_level: EducationLevel;
    @Column({default:0})
-   credit:string;
+   credit:number;
   @CreateDateColumn()
   created_at: Date;
 

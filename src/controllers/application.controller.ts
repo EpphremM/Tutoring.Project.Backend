@@ -5,34 +5,29 @@ import { inputValidate } from "../zod/middlewares/zod.validation";
 import { AppError } from "../express/error/app.error";
 import { ApplicationRepository } from "../database/repositories/application.repository";
 import { ResponseBody } from "../express/types/response.body";
-export const registration = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const registration = async (body:ApplicationInterface) => {
   try {
-    const body: ApplicationInterface = req.body;
     console.log("request body", body);
     const validator = inputValidate(applicationSchema, body);
     console.log(validator);
+    let responseBody:ResponseBody<ApplicationInterface[]>;
     if (!validator.status) {
-      next(new AppError("validation error", 400, "operational"));
+       return responseBody={status:"fail",message:"Validation error",data:{payload:[]}}
     }
     const result = await ApplicationRepository.getRepo().registration(body);
     console.log("result is ", result);
     if (!result) {
-      next(new AppError("no application registered", 400, "operational"));
+     return responseBody={status:"fail",message:"Application nor registered",data:{payload:[]}}
     }
-    const responseBody: ResponseBody<ApplicationInterface> = {
+       responseBody= {
       status: "success",
       message: "application registered successfully",
-      data: { payload: result },
+      data: { payload: [result] },
     };
-    res.status(200).json(responseBody);
-    return;
+    return responseBody;
   } catch (error) {
     console.log(error);
-    next(new AppError("error occured", 400, "operational", error));
+    return {status:"fail",message:"Error occured",data:{payload:[]}}
   }
 };
 export const findById=async(req:Request,res:Response,next:NextFunction)=>{
