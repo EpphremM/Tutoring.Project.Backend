@@ -8,7 +8,7 @@ export class CreateJobsSearchVectorTrigger1672930000000
       CREATE OR REPLACE FUNCTION update_jobs_search_vector() RETURNS TRIGGER AS $$
       BEGIN
       NEW.tsvector := 
-      setweight(to_tsvector('simple', COALESCE(NEW.required_gender::TEXT, 'both')), 'A') ||
+      setweight(to_tsvector('english', COALESCE(NEW.required_gender::TEXT, 'both')), 'A') ||
       setweight(to_tsvector('english', COALESCE(NEW.education_level::TEXT, '')), 'B') ||
       setweight(to_tsvector('english', COALESCE(NEW.experience::TEXT, '')), 'B') ||
       setweight(to_tsvector('english', COALESCE(NEW.hourly_budget::varchar, '1000')), 'C') ||

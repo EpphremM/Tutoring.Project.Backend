@@ -16,9 +16,9 @@ export const registration = async (
 ) => {
   try {
     const body: TutorInterface = req.body;
-  
-const {email}:TutorInterface=body;
-const previousTutor=await  TutorRepository.getRepo().findByEmail(email);
+
+    const { email }: TutorInterface = body;
+    const previousTutor = await TutorRepository.getRepo().findByEmail(email);
     const validation = inputValidate(tutorSchema, body);
     console.log(validation);
     if (!validation.status) {
@@ -28,10 +28,12 @@ const previousTutor=await  TutorRepository.getRepo().findByEmail(email);
         error: validation.errors,
       });
       return;
-    }if(previousTutor){
+    }
+    if (previousTutor) {
       res.status(400).json({
-        status:"fail",
-        message:"Tutor already registered"});
+        status: "fail",
+        message: "Tutor already registered",
+      });
       return;
     }
     const result = await TutorRepository.getRepo().register(body);
@@ -48,7 +50,7 @@ const previousTutor=await  TutorRepository.getRepo().findByEmail(email);
         "error occured during during registration",
         400,
         "operational",
-        error,
+        error
       )
     );
   }
@@ -78,7 +80,7 @@ export const findAll = async (
         "error occured during validation",
         404,
         "validation failed",
-        error,
+        error
       )
     );
   }
@@ -102,7 +104,7 @@ export const findById = async (
     res.status(200).json({ status: "success", data: { payload: result } });
     return;
   } catch (error) {
-    next(new AppError("error occured", 400, "operation",error));
+    next(new AppError("error occured", 400, "operation", error));
   }
 };
 export const update = async (
@@ -112,7 +114,9 @@ export const update = async (
 ) => {
   try {
     const { id } = req.params;
-    const tutor: TutorInterface = await TutorRepository.getRepo().findOneById(id);
+    const tutor: TutorInterface = await TutorRepository.getRepo().findOneById(
+      id
+    );
     const body: Partial<TutorInterface> = req.body;
     delete body.password;
     if (!tutor) {
@@ -149,47 +153,59 @@ export const update = async (
     res.status(200).json({ status: "success", data: { payload: result } });
     return;
   } catch (error) {
-    next(new AppError("error occured", 400, "operational",error));
+    next(new AppError("error occured", 400, "operational", error));
   }
 };
 export const applyJob = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
     const body: ApplicationInterface = req.body;
     const { tutor_id, job_id } = body;
-
     if (!tutor_id || !job_id) {
-      return res.status(400).json({
-        status: "fail",
-        message: "Tutor ID and Job ID are required.",
-      });
+      next(new AppError("Tutor ID and Job ID is required", 404, "Operational"));
+      return;
     }
     const [tutor, job] = await Promise.all([
       TutorRepository.getRepo().findOneById(tutor_id),
       JobRepository.getRepo().findById(job_id),
     ]);
-
-    if (!tutor) return next(new AppError("Tutor not found", 404, "Operational"));
-    if (!job) return next(new AppError("Job not found", 404, "Operational"));
+    if (!tutor) {
+      next(new AppError("Tutor not found", 404, "Operational"));
+      return;
+    }
+    console.log(job);
+    if (!job) {
+      next(new AppError("Job not found", 404, "Operational"));
+      return;
+    }
     if (tutor.credit < 1) {
-      return next(new AppError("Insufficient balance. Please recharge your account.", 400, "Operational"));
+      next(
+        new AppError(
+          "Insufficient balance. Please recharge your account.",
+          400,
+          "Operational"
+        )
+      );
+      return;
     }
     const payment = await updateTutorCredit(tutor_id, "1", "spend");
     if (!payment) {
-      return next(new AppError("Failed to process application fee.", 400, "Operational"));
+      next(
+        new AppError("Failed to process application fee.", 400, "Operational")
+      );
+      return;
     }
     const [newTutor, application] = await Promise.all([
       TutorRepository.getRepo().apply(tutor, job),
       ApplicationRepository.getRepo().registration(body),
     ]);
-
     if (!newTutor || !application) {
-      return next(new AppError("Application submission failed.", 400, "Operational"));
+      next(new AppError("Application submission failed.", 400, "Operational"));
+      return;
     }
-
     const responseBody: ResponseBody<ApplicationInterface> = {
       status: "success",
       message: "Tutor applied successfully.",
@@ -197,51 +213,67 @@ export const applyJob = async (
     };
     res.status(200).json(responseBody);
   } catch (error) {
-    next(new AppError("An error occurred while processing your request.", 500, "Operational", error));
+    next(
+      new AppError(
+        "An error occurred while processing your request.",
+        500,
+        "Operational",
+        error
+      )
+    );
   }
 };
 
-export const Delete=async(req:Request,res:Response,next:NextFunction)=>{
-  try{
-     const {id}=req.params;
-     const application=await TutorRepository.getRepo().findOneById(id);
-     if(!application){
-      next(new AppError("Tutor to found",404,"Operational"));
-     }
-     const result= await TutorRepository.getRepo().Delete(id);
-     if(!result){
-      next(new AppError("Tutor not deleted",400,"Operational"));
-     }
-     const responseBody={status:"success",message:"Tutor deleted successfully"};
-     res.status(200).json(responseBody);
-
-  }catch(error){
-    next(new AppError("Error occured during tutor",400,"Operational"))
+export const Delete = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const application = await TutorRepository.getRepo().findOneById(id);
+    if (!application) {
+      next(new AppError("Tutor to found", 404, "Operational"));
+    }
+    const result = await TutorRepository.getRepo().Delete(id);
+    if (!result) {
+      next(new AppError("Tutor not deleted", 400, "Operational"));
+    }
+    const responseBody = {
+      status: "success",
+      message: "Tutor deleted successfully",
+    };
+    res.status(200).json(responseBody);
+  } catch (error) {
+    next(new AppError("Error occured during tutor", 400, "Operational"));
   }
-}
+};
 
-export const updateTutorCredit=async(id:string,amount:string,operation)=>{
-  try{
-    
-    const tutor=await TutorRepository.getRepo().findOneById(id)
-    if(!tutor){
+export const updateTutorCredit = async (
+  id: string,
+  amount: string,
+  operation
+) => {
+  try {
+    const tutor = await TutorRepository.getRepo().findOneById(id);
+    if (!tutor) {
       console.log("Tutor not found");
       return null;
     }
-    if(operation==="topup"){
+    if (operation === "topup") {
       const credit = Math.ceil(parseInt(amount) / 20);
-    tutor.credit+=credit;
-    }else if(operation==="spend"){
-      tutor.credit-=1;
+      tutor.credit += credit;
+    } else if (operation === "spend") {
+      tutor.credit -= 1;
     }
-  const newTutor=await TutorRepository.getRepo().updateCredit(tutor);
-  if(!newTutor){
-    console.log("Tutor credit is not updated");
-    return null;
-  }
-  return newTutor;
-  }catch(error){
-    console.log("Error occured during updating tutor's credit")
+    const newTutor = await TutorRepository.getRepo().updateCredit(tutor);
+    if (!newTutor) {
+      console.log("Tutor credit is not updated");
+      return null;
+    }
+    return newTutor;
+  } catch (error) {
+    console.log("Error occured during updating tutor's credit");
     throw error;
   }
-}
+};
